@@ -61,5 +61,10 @@ class User extends Authenticatable
         return $this->hasOne(Subscription::class);
     }
 
+    public function hasAdminAccess(): bool
+    {
+        return in_array($this->role, ['admin']);
+    }
+
 
 }

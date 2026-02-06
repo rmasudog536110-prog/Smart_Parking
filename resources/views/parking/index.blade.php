@@ -3,9 +3,9 @@
 @section('title', 'Parking locations')
 
 @section('content')
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex items-center justify-between mb-4 py-2 border-b mt-8">
         <div>
-            <h1 class="text-xl font-semibold text-gray-900">
+            <h1 class="text-2xl font-semibold text-gray-900">
                 Parking locations
             </h1>
             <p class="text-xs text-gray-500">
@@ -21,7 +21,7 @@
                 name="q"
                 value="{{ request('q') }}"
                 placeholder="Search by name or address"
-                class="w-full md:w-72 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                class="w-full h-10 p-2 md:w-72 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
             >
             <button type="submit"
                     class="inline-flex items-center px-3 py-2 rounded-md bg-gray-900 text-white text-xs font-semibold shadow-sm hover:bg-black">

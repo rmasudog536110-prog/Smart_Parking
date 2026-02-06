@@ -17,46 +17,43 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 use Illuminate\Support\Facades\Route;
 
-// Landing
+Route::middleware('guest')->group(function () {
 Route::view('/', 'landing')->name('landing');
 
-// Auth routes (custom minimal auth)
-Route::get('/login', function () {
-    return redirect()->route('landing') . '#login';
-})->name('login');
+Route::get('/login', [RegisteredUserController::class, 'showLogin'])->name('login');
+Route::post('/login', [RegisteredUserController::class, 'login'])->name('login.submit');
 
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])
     ->name('login.store');
 
-Route::get('/register', function () {
-    return redirect()->route('landing') . '#signup';
-})->name('register');
+    Route::get('/register', [RegisteredUserController::class, 'showRegister'])->name('register');
+    Route::post('/register', [RegisteredUserController::class, 'register'])->name('register.submit');
 
 Route::post('/register', [RegisteredUserController::class, 'store'])
     ->name('register.store');
 
-Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
-    ->name('logout');
-
 Route::view('/forgot-password', 'auth.forgot-password')
     ->name('password.request');
+});
 
-//User
-Route::get('/home', [IndexController::class, 'index'])->name('home');
+Route::get('/logout', [RegisteredUserController::class, 'logout'])->name('logout');
+Route::post('/logout', [RegisteredUserController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
-Route::get('/parking', [ParkLocController::class, 'index'])
-    ->name('parking.index');
+//Auth User
+Route::middleware('auth')->group(function () {
+    
+    Route::get('/home', [IndexController::class, 'index'])->name('home');
 
-Route::get('/parking/{parkingLocation}', [ParkLocController::class, 'show'])
-    ->name('parking.show');
+    Route::get('/parking', [ParkLocController::class, 'index'])
+        ->name('parking.index');
 
-Route::post('/contact', [ContactsController::class, 'store'])
-    ->name('contact.store');
+    Route::get('/parking/{parkingLocation}', [ParkLocController::class, 'show'])
+        ->name('parking.show');
 
-
-//Auth
-Route::middleware(['auth'])->group(function () {
-
+    Route::post('/contact', [ContactsController::class, 'store'])
+        ->name('contact.store');
     // Vehicles
     Route::resource('vehicles', VehicleController::class)
         ->except(['show']);

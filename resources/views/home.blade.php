@@ -4,13 +4,13 @@
 
 @section('content')
     <div class="grid gap-8 lg:grid-cols-[3fr,2fr] items-start">
-        <section class="space-y-6">
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <section class="space-y-6 p-6">
+            <div class=" bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <h1 class="text-2xl font-semibold mb-2">
-                    Smart parking made simple
+                    Hassle Free Smart Parking
                 </h1>
                 <p class="text-sm text-gray-600 mb-4">
-                    Find and reserve parking spots in seconds. Browse nearby locations,
+                    Find and reserve parking spots in a minute! Browse nearby locations,
                     see availability in real time, and keep track of your reservations.
                 </p>
                 <div class="flex flex-wrap items-center gap-3">
@@ -73,7 +73,7 @@
             </div>
         </section>
 
-        <section class="space-y-4">
+        <section class="space-y-4 p-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
                 <h2 class="text-sm font-semibold text-gray-900 mb-1">
                     Contact us

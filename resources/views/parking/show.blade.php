@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', $parkingLocation->name . ' – Parking location')
+@section('title', $parkingLocation->name . 'Parking location')
 
 @section('content')
     <div class="mb-4 flex items-center justify-between gap-4">
