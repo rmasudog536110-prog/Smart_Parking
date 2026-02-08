@@ -9,7 +9,7 @@ use App\Http\Controllers\User\SubscriptionController;
 use App\Http\Controllers\User\ContactsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminParkLocController;
-use App\Http\Controllers\Admin\AdminParkSlotController;
+use App\Http\Controllers\Admin\AdminParkingSlotController;
 use App\Http\Controllers\Admin\AdminReservationsController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
@@ -26,15 +26,16 @@ Route::post('/login', [RegisteredUserController::class, 'login'])->name('login.s
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])
     ->name('login.store');
 
-    Route::get('/register', [RegisteredUserController::class, 'showRegister'])->name('register');
-    Route::post('/register', [RegisteredUserController::class, 'register'])->name('register.submit');
+Route::get('/register', [RegisteredUserController::class, 'showRegister'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'register'])->name('register.submit');
 
-Route::post('/register', [RegisteredUserController::class, 'store'])
-    ->name('register.store');
 
 Route::view('/forgot-password', 'auth.forgot-password')
     ->name('password.request');
 });
+
+Route::view('/privacy', 'legalsht.privacy')->name('privacy');
+Route::view('/terms', 'legalsht.terms')->name('terms');
 
 Route::get('/logout', [RegisteredUserController::class, 'logout'])->name('logout');
 Route::post('/logout', [RegisteredUserController::class, 'logout'])
@@ -60,6 +61,10 @@ Route::middleware('auth')->group(function () {
 
     // Reservations
     Route::resource('reservations', ReservationController::class);
+
+    Route::post('/reservations/{reservation}/create',
+        [ReservationController::class, 'create'])
+        ->name('reservations.create');
 
     Route::post('/reservations/{reservation}/start',
         [ReservationController::class, 'start'])
@@ -89,15 +94,16 @@ Route::middleware('auth')->group(function () {
 });
 
 //Admin
-Route::middleware(['auth', 'admin'])
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
 
         Route::get('/dashboard',
             [AdminDashboardController::class, 'index'])
             ->name('dashboard');
 
+       Route::get('/charts',
+            [AdminDashboardController::class, 'charts'])
+            ->name('charts');
+        
         // Parking Locations
         Route::resource('parking-locations',
             AdminParkLocController::class);

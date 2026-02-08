@@ -3,8 +3,8 @@
 @section('title', 'Smart Parking')
 
 @section('content')
-{{-- Added my-[10px] for exactly 10px top and bottom margin --}}
-<div class="max-h-[80vh] flex items-center justify-center px-4 my-[10px]">
+
+<div class="max-h-[100vh] flex items-center justify-center px-4">
     <div class="max-w-5xl w-full text-center space-y-12">
 
         {{-- Hero --}}
@@ -54,6 +54,18 @@
                 <p class="font-semibold text-gray-900 mb-2">🅿️ Easy reservations</p>
                 <p class="text-sm text-gray-600">
                     Book your slot ahead of time and arrive stress-free.
+                </p>
+            </div>
+
+            <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                <p class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-yellow-500">
+                        <path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.972 9.5h4.778a.75.75 0 0 1 .58 1.222l-11.32 13.5a.75.75 0 0 1-1.285-.794l3.18-8.428H4.125a.75.75 0 0 1-.58-1.222l11.32-13.5a.75.75 0 0 1 .75-.241Z" clip-rule="evenodd" />
+                    </svg>
+                    Lightning-fast entry
+                </p>
+                <p class="text-sm text-gray-600">
+                    Skip the long queues with our automated gate systems and qr code entry.
                 </p>
             </div>
         </section>

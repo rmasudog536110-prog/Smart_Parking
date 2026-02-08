@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 class RegisteredUserController extends Controller
 {
     
-    public function showRegister(Request $request) {
+public function showRegister(Request $request) {
 
         $selectedPlanId = $request->query('plan');
          
@@ -34,44 +34,14 @@ public function register(Request $request)
     $request->validate([
         'name' => 'required',
         'email' => 'required|email|unique:users',
-        'phone_number' => 'required|max:10|unique:users',
         'password' => 'required|min:6|confirmed',
-        'plan_id' => ['nullable', 'integer'],
     ]);
 
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
-        'phone_number' => $request->phone_number,
         'password' => Hash::make($request->password),
     ]);
-
-    $user->profile()->create([]);
-
-    if ($request->filled('plan_id')) {
-        $plan = SubscriptionPlan::find($request->plan_id);
-
-        if ($plan) {
-            Auth::login($user);
-
-            return redirect()
-                ->route('subscription.payment.form', ['plan' => $plan->id])
-                ->with('success', 'Please upload your payment proof to activate your subscription.');
-        }
-    }
-
-    $subscription = $user->subscriptions()->latest()->first();
-
-    if ($subscription && $subscription->status === 'pending') {
-        Auth::login($user);
-        return redirect()->route('landing')->with('success', 'Thank you for registering. Your subscription is pending approval.');
-    }
-
-    if ($subscription && $subscription->status === 'null') {
-        Auth::login($user);
-        return redirect()->route('subscription.payment.form');
-    }
-
 
     return redirect('home')->with('success', 'Registered successfully.');
 }

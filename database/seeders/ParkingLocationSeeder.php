@@ -13,15 +13,16 @@ class ParkingLocationSeeder extends Seeder
      */
     public function run(): void
     {
-        ParkingLocation::create([
-            'name' => 'Downtown Parking',
-            'address' => 'Main Street',
-            'latitude' => 40.7128,
-            'longitude' => -74.0060,
-            'capacity' => 50,
-            'hourly_rate' => 3.50,
-            'is_available' => true,
-        ]);
+    ParkingLocation::create([
+        'name' => 'UM Matina - Library Parking',
+        'address' => 'UM Matina Campus, Matina Pangi Rd, Davao City',
+        'latitude' => 7.06520000,
+        'longitude' => 125.59620000,
+        'capacity' => 20, 
+        'hourly_rate' => 20.00, 
+        'is_available' => true,
+    ]);
 
     }
+
 }

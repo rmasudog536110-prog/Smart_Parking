@@ -23,11 +23,6 @@ class AdminMiddleware
             abort(403, 'Unauthorized access. Admin privileges required.');
         }
 
-        if (!auth()->user()->is_active) {
-            auth()->logout();
-            return redirect()->route('login')->with('error', 'Your account has been deactivated.');
-        }
-
         return $next($request);
     }
 }

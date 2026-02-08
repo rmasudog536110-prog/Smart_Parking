@@ -13,10 +13,10 @@ class ParkingLocation extends Model
         'name', 'address', 'latitude', 'longitude',
         'capacity', 'hourly_rate', 'is_available'
     ];
-
+    
     public function slots()
     {
-        return $this->hasMany(ParkingSlot::class);
+        return $this->hasMany(ParkingSlot::class, 'location_id');
     }
 
     public function reviews()

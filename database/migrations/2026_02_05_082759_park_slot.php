@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('location_id')->constrained('parking_locations');
             $table->integer('slot_number');
-            $table->enum('type', ['compact', 'large', 'handicapped', 'electric']);
+            $table->enum('type', ['compact', 'large', 'pwd', 'electric']);
             $table->enum('status', ['available', 'occupied', 'maintenance', 'reserved'])->default('available');
             $table->timestamps();
         });

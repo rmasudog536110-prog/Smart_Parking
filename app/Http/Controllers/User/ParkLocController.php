@@ -15,7 +15,8 @@ class ParkLocController extends Controller
 
     public function show(ParkingLocation $parkingLocation)
     {
-        $parkingLocation->load('slots');
+        // Load the 'slots' relationship we just defined
+        $parkingLocation->load('slots'); 
         return view('parking.show', compact('parkingLocation'));
     }
 }

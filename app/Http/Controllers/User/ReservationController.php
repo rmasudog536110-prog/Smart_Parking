@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\ParkingLocation;
 use App\Models\Reservation;
 use App\Models\ParkingSlot;
 use Illuminate\Http\Request;
@@ -13,6 +14,12 @@ class ReservationController extends Controller
     {
         $reservations = auth()->user()->reservations()->latest()->get();
         return view('reservations.index', compact('reservations'));
+    }
+
+    public function create(ParkingLocation $parkingLocation)
+    {
+    $slots = $parkingLocation->slots()->where('status', 'available')->get();
+    return view('reservations.create', compact('parkingLocation', 'slots'));
     }
 
     public function store(Request $request)

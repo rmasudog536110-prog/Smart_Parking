@@ -15,7 +15,7 @@
                 </p>
                 <div class="flex flex-wrap items-center gap-3">
                     <a href="{{ route('parking.index') }}"
-                       class="inline-flex items-center px-4 py-2 rounded-md bg-orange-500 text-white text-sm font-semibold shadow-sm hover:bg-orange-600">
+                       class="inline-flex items-center px-4 py-2 rounded-md bg-blue-500 text-white text-sm font-semibold shadow-sm hover:bg-blue-600">
                         Browse parking locations
                     </a>
                     <p class="text-xs text-gray-500">
@@ -29,7 +29,7 @@
                     <h2 class="text-sm font-semibold text-gray-900">
                         Featured locations
                     </h2>
-                    <a href="{{ route('parking.index') }}" class="text-xs text-orange-600 hover:text-orange-700 font-medium">
+                    <a href="{{ route('parking.index') }}" class="text-sm text-gray-600 hover:text-gray-700">
                         View all
                     </a>
                 </div>
@@ -42,10 +42,10 @@
                     <div class="grid gap-4 md:grid-cols-2">
                         @foreach ($locations as $location)
                             <a href="{{ route('parking.show', $location) }}"
-                               class="group bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:border-orange-400 hover:shadow-md transition">
+                               class="group bg-white rounded-lg border border-gray-200 p-4 shadow-sm hover:border-blue-400 hover:shadow-md transition">
                                 <div class="flex items-start justify-between gap-3">
                                     <div>
-                                        <h3 class="text-sm font-semibold text-gray-900 group-hover:text-orange-600">
+                                        <h3 class="text-sm font-semibold text-gray-900 group-hover:text-blue-600">
                                             {{ $location->name }}
                                         </h3>
                                         <p class="mt-1 text-xs text-gray-500">
@@ -58,12 +58,12 @@
                                     </span>
                                 </div>
 
-                                <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
-                                    <span>
+                                <div class="mt-3 flex items-center justify-between">
+                                    <span class="text-sm">
                                         Capacity: {{ $location->capacity }} slots
                                     </span>
-                                    <span class="font-semibold text-gray-900">
-                                        ₱{{ number_format($location->hourly_rate, 2) }}/hour
+                                    <span class="text-xl font-semibold text-gray-900">
+                                        ₱ {{ number_format($location->hourly_rate, 2) }}/hour
                                     </span>
                                 </div>
                             </a>
@@ -93,14 +93,14 @@
                             type="email"
                             name="email"
                             required
-                            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                            class="block w-full h-10 px-3 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
                             placeholder="you@example.com"
                             value="{{ old('email') }}"
                         >
                     </div>
 
                     <div>
-                        <label class="block text-xs font-medium text-gray-700 mb-1" for="message">
+                        <label class="block text-sm font-medium text-gray-700 mb-1" for="message">
                             Message
                         </label>
                         <textarea
@@ -108,13 +108,13 @@
                             name="message"
                             rows="4"
                             required
-                            class="block w-full rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                            class="block w-full h-10 px-3 py-2 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
                             placeholder="Tell us how we can help..."
                         >{{ old('message') }}</textarea>
                     </div>
 
                     <button type="submit"
-                            class="w-full inline-flex justify-center items-center px-3 py-2 rounded-md bg-gray-900 text-white text-sm font-semibold shadow-sm hover:bg-black">
+                            class="w-full inline-flex justify-center items-center px-3 py-2 rounded-md bg-gray-900 text-white text-sm font-semibold shadow-sm hover:bg-black cursor-pointer">
                         Send message
                     </button>
                 </form>

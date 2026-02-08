@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('address')->unique();            
-            $table->decimal('latitude', 10, 8);
-            $table->decimal('longitude', 10, 8);
+            $table->decimal('latitude', 11, 8);
+            $table->decimal('longitude', 11, 8);
             $table->integer('capacity');
             $table->decimal('hourly_rate', 8, 2);
             $table->boolean('is_available')->default(true);
