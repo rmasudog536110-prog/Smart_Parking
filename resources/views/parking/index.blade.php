@@ -8,10 +8,7 @@
         <div class=" bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div class="flex items-center justify-between mb-4 py-2 border-b">
                 <div class="space-y-1">
-                    <h1 class="text-2xl font-semibold text-gray-900">
-                        Parking locations
-                    </h1>
-                    <p class="text-xs text-gray-500">
+                    <p class="text-xl text-gray-900">
                         Browse all available parking areas in the system.
                     </p>
                 </div>

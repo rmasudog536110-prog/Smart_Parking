@@ -3,90 +3,126 @@
 @section('title', 'Subscription')
 
 @section('content')
+<section class="space-y-6 p-6">
 
-    <section class="space-y-6 p-6 mb-0">
-        <div class="mb-1 flex items-center justify-between gap-4 p-6">
-            <div>
-                <h1 class="text-4xl font-semibold text-gray-900">
-                    Subscription
-                </h1>
-                <p class="text-sm text-gray-500">
-                    View your current subscription status for the smart parking system.
-                </p>
+    @if (session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 text-sm">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold mb-4">Current Plan</h2>
+
+        @if ($subscription && in_array($subscription->status, ['active', 'pending']))
+            @php
+                $subscriptionPlan = $subscription->plan;
+                $isFreePlan = strtolower($subscriptionPlan?->name) === 'free plan';
+            @endphp
+
+            <div class="text-sm space-y-2">
+                <p><strong>Plan:</strong> {{ $subscriptionPlan?->name ?? '—' }}</p>
+                <p><strong>Status:</strong> {{ ucfirst($subscription->status) }}</p>
+                <p><strong>Price:</strong> ₱{{ number_format($subscription->price, 2) }}</p>
+                <p><strong>Duration:</strong> {{ $subscription->plan?->duration ?? '—' }} days</p>
+                <p><strong>Start:</strong> {{ $subscription->starts_at?->format('F j, Y') }}</p>
+                <p><strong>End:</strong> {{ $subscription->ends_at?->format('F j, Y') }}</p>
             </div>
-        </div>
 
-        <div class="p-6 grid gap-6 lg:grid-cols-[2fr,3fr] items-start">
-            <section class="bg-white rounded-lg border border-gray-200 p-4">
-                <h2 class="text-m font-semibold text-gray-900 mb-2">
-                    Current subscription
-                </h2>
-
-                @if ($subscription)
-                    <dl class="space-y-2 text-xs text-gray-700">
-                        <div>
-                            <dt class="text-gray-500">Plan type</dt>
-                            <dd class="font-medium">
-                                {{ ucfirst($subscription->plan_type ?? 'unknown') }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Status</dt>
-                            <dd class="font-medium">
-                                {{ ucfirst($subscription->status ?? 'active') }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">Start date</dt>
-                            <dd class="font-medium">
-                                {{ $subscription->start_date ?? optional($subscription->starts_at)->toDateString() ?? '—' }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-gray-500">End date</dt>
-                            <dd class="font-medium">
-                                {{ $subscription->end_date ?? optional($subscription->ends_at)->toDateString() ?? '—' }}
-                            </dd>
-                        </div>
-                    </dl>
-
-                    <p class="mt-3 text-[11px] text-gray-500">
-                        Subscription management (changing plans, canceling, and billing details)
-                        can be further refined in the controller and database schema.
-                    </p>
-                @else
-                    <p class="text-xs text-gray-500">
-                        You do not have an active subscription yet.
-                    </p>
-                @endif
-            </section>
-
-            <section class="bg-white rounded-lg border border-gray-200 p-4">
-                <h2 class="text-sm font-semibold text-gray-900 mb-2">
-                    Plans (UI only)
-                </h2>
-                <p class="text-xs text-gray-500 mb-3">
-                    The subscription backend (fields and pricing) still needs to be aligned
-                    between the controller, model, and database. For now, this section only
-                    illustrates what the UI could look like.
-                </p>
-
-                <div class="grid gap-3 md:grid-cols-3 text-xs">
-                    <div class="border border-gray-200 rounded-lg p-3">
-                        <h3 class="font-semibold text-gray-900 mb-1">Basic</h3>
-                        <p class="text-gray-500 mb-2">Ideal for occasional drivers.</p>
+            @if ($subscription->status === 'pending')
+                <p class="text-sm text-yellow-600 mt-4">⏳ Please wait for payment confirmation.</p>
+                <form method="POST" action="{{ route('subscription.cancel') }}" class="mt-3"
+                    onsubmit="return confirm('Are you sure you want to cancel your subscription?')">
+                    @csrf
+                    <div class="text-right">
+                        <button class="w-40 bg-red-600 hover:bg-red-400 text-white text-sm py-2 px-4 rounded cursor-pointer">
+                            Cancel Subscription
+                        </button>
                     </div>
-                    <div class="border border-orange-300 rounded-lg p-3 bg-orange-50">
-                        <h3 class="font-semibold text-gray-900 mb-1">Premium</h3>
-                        <p class="text-gray-500 mb-2">Frequent use with extra perks.</p>
+                </form>
+
+            @elseif ($subscription->status === 'active' && !$isFreePlan)
+                <form method="POST" action="{{ route('subscription.cancel') }}" class="mt-4 mb-4"
+                    onsubmit="return confirm('Are you sure you want to cancel your subscription?')">
+                    @csrf
+                    <div class="text-right">
+                        <button class="w-40 bg-red-600 hover:bg-red-400 text-white text-sm py-2 px-4 rounded cursor-pointer">
+                            Cancel Subscription
+                        </button>
                     </div>
-                    <div class="border border-gray-200 rounded-lg p-3">
-                        <h3 class="font-semibold text-gray-900 mb-1">VIP</h3>
-                        <p class="text-gray-500 mb-2">Reserved slots in prime areas.</p>
+                </form>
+
+            @elseif ($isFreePlan)
+                <p class="text-sm text-gray-500 mt-4">You are currently on the free plan. No cancellation needed.</p>
+            @endif
+            <div class="flex flex-wrap justify-end gap-3">
+                <a href="{{ route('parking.index') }}"
+                   class="inline-flex px-4 py-2 rounded-md bg-blue-500 text-white text-sm font-semibold shadow-sm hover:bg-blue-600">
+                    Browse parking locations
+                </a>
+            </div>
+
+        @elseif (!$subscription || in_array($subscription->status, ['cancelled', 'expired']))
+
+            @if ($subscription?->status === 'cancelled')
+                <p class="text-sm text-gray-500 mb-5">Your subscription has been cancelled. Choose a new plan below.</p>
+            @else
+                <p class="text-sm text-gray-500 mb-5">No active subscription.</p>
+            @endif
+
+            <div id="plans-grid" class="grid md:grid-cols-3 gap-6">
+                @foreach ($plans as $plan)
+                    @if ($plan->price == 0 && $hasUsedFreePlan)
+                        @continue
+                    @endif
+
+                    <div class="bg-white rounded-lg border border-gray-200 p-6 shadow-sm">
+
+                        <div class="grid md:grid-cols-2 mb-2">
+                            <h3 class="text-2xl font-semibold text-left">{{ $plan->name }}</h3>
+                            @if (!empty($plan->trial))
+                                <p class="text-xs text-right mt-2">{{ $plan->trial }}</p>
+                            @endif
+                        </div>
+
+                        <p class="text-3xl text-right font-bold mb-4 text-gray-900">
+                            ₱{{ $plan->price }}
+                        </p>
+
+                        <ul class="text-sm space-y-2">
+                            @foreach ($plan->features as $feature)
+                                <li>✔ {{ $feature }}</li>
+                            @endforeach
+                        </ul>
+
+                        <div class="mt-5">
+                            <form method="POST" action="{{ route('subscription.show') }}">
+                                @csrf
+                                <input type="hidden" name="plan_id" value="{{ $plan->id }}">
+                                <button class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
+                                    Choose Plan
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
-                </div>
-            </section>
-        </div>
-    </section>
+                @endforeach
+            </div>
+
+        @else
+            <p class="text-sm text-gray-500">
+                Your subscription status is currently: <strong>{{ ucfirst($subscription->status) }}</strong>.
+                Please contact support for assistance.
+            </p>
+        @endif
+
+    </div>
+
+</section>
 @endsection
-

@@ -3,18 +3,8 @@
 @section('title', 'Admin Dashboard – Smart Parking')
 
 @section('content')
-    <div class="mb-6 flex items-center justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-900">
-                Admin Dashboard
-            </h1>
-            <p class="text-sm text-gray-500">
-                Real-time overview of users, parking availability, and reservations.
-            </p>
-        </div>
-    </div>
 
-    <div class="grid gap-6 lg:grid-cols-2 mb-0">
+    <div class="grid gap-6 lg:grid-cols-2 mt-5 mb-1 px-6">
         {{-- Line Chart: Revenue Trend --}}
         <div class="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
             <h3 class="font-bold text-gray-900 mb-4">Revenue Trend (Last 6 Months)</h3>
@@ -32,7 +22,7 @@
         </div>
     </div>
 
-    <div class="mt-2 mb-0 flex items-center justify-start gap-4 mb-2">
+    <div class="mt-2 mb-0 flex items-center justify-start gap-4 mt-1 mb-2 px-6">
         <a href="{{ route('admin.dashboard') }}" class="bg-blue-500 text-white px-4 py-2 text-right rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
             <i class="fa-solid fa-arrow-left"></i> Return to Dashboard
         </a>

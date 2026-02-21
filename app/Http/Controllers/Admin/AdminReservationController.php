@@ -23,6 +23,18 @@ class AdminReservationController extends Controller
         return view('reservations.show', compact('reservation'));
     }
 
+    public function scan($id, $token)
+    {
+        $expected = hash_hmac('sha256', $id, config('app.key'));
+
+        if (!hash_equals($expected, $token)) {
+            abort(403, 'Invalid QR code.');
+        }
+
+        $reservation = Reservation::findOrFail($id);
+        return view('admin.reservations.scan', compact('reservation'));
+    }
+
     public function destroy(Reservation $reservation)
     {
         $this->authorize('delete', $reservation);

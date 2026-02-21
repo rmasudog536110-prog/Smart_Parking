@@ -28,8 +28,8 @@
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
 
-                <h2 class="text-sm font-semibold text-gray-900 mb-1">Log in</h2>
-                <p class="text-xs text-gray-500 mb-4">
+                <h2 class="text-3xl text-center font-semibold text-gray-900 mb-1">Log in</h2>
+                <p class="text-xs text-center text-gray-500 mb-4">
                     Access your parking reservations and account settings.
                 </p>
 
@@ -69,16 +69,19 @@
                             Forgot password?
                         </a>
                     </div>
-                
+                <div class="text-right">
+                    
+                    <a href="{{ route('register') }}"
+                            class="w-30 rounded-md px-3 py-2 mt-2 text-sm font-semibold text-blue-600 hover:bg-gray-100 cursor-pointer">
+                        Create account
+                    </a>
+
                     <button type="submit"
                             class="w-30 rounded-md bg-blue-600 px-3 py-2 mt-2 text-sm font-semibold text-white hover:bg-blue-400 cursor-pointer">
                         Log in
                     </button>
 
-                    <a href="{{ route('register') }}"
-                            class="w-30 rounded-md px-3 py-2 mt-2 text-sm font-semibold text-blue-600 hover:bg-gray-100 cursor-pointer">
-                        Create account
-                    </a>
+                </div>
                 </form>
                 </div>
             </div>

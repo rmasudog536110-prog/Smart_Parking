@@ -56,8 +56,10 @@ class AdminDashboardController extends Controller
             ->with(['user', 'slot', 'payment'])
             ->latest()
             ->get();
+        
+        $users = User::latest()->get();
 
-        return view('admin.dashboard', compact('stats', 'recentUsers', 'pendingPayments', 'staff'));
+        return view('admin.dashboard', compact('stats', 'recentUsers', 'pendingPayments', 'staff', 'users'));
     }
 
     public function charts()

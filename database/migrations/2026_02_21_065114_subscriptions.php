@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users');
-            $table->enum('plan_type',['basic','premium','vip']);
+            $table->foreignId('plan_id')->constrained('subscription_plans');
             $table->decimal('price', 8, 2);
             $table->date('starts_at');
             $table->date('ends_at');
-            $table->enum('status', ['active', 'expired', 'canceled'])->default('active');
+            $table->enum('status', ['active', 'expired', 'cancelled', 'null', 'pending'])->default('null');
             $table->timestamps();
         });
     }

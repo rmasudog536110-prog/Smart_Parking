@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Admin',
             'email' => 'admin@sample.test',
             'password' => bcrypt(value: 'admin123'),
+            'phone_number' => '1234567890',
             'role' => 'admin',
         ]);
 
@@ -23,12 +24,22 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Doe',
             'email' => 'john@sample.test',
             'password' => bcrypt('john123'),
+            'phone_number' => '0987654321',
             'role' => 'user',
         ]);
 
-        $this->call([
+        User::create([
+            'name' => 'Staff staff',
+            'email' => 'staff@sample.test',
+            'password' => bcrypt('staff123'),
+            'phone_number' => '1122334455',
+            'role' => 'staff',
+        ]);
+
+        $this->call(class: [
             ParkingLocationSeeder::class,
             ParkingSlotSeeder::class,
+            SubscriptionsSeeder::class,
         ]);
     }
 }

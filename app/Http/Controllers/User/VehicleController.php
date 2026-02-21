@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\Vehicles;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
@@ -14,17 +14,24 @@ class VehicleController extends Controller
         return view('vehicles.index', compact('vehicles'));
     }
 
-    public function store(StoreVehicleRequest  $request)
+    public function store(Request $request)
     {
-        auth()->user()->vehicles()->create($request->validated());
-        return back();
+        $request->validate([
+            'plate_num' => 'required|string|max:20|unique:vehicle,plate_num',
+            'brand'     => 'nullable|string|max:50',
+            'model'     => 'nullable|string|max:50',
+            'color'     => 'nullable|string|max:30',
+        ]);
+
+        auth()->user()->vehicles()->create($request->only('plate_num', 'brand', 'model', 'color'));
+
+        return back()->with('success', 'Vehicle added successfully.');
     }
 
-    public function destroy(Vehicles $vehicle)
+    public function destroy(Vehicle $vehicle)
     {
+        $this->authorize('delete', $vehicle);
         $vehicle->delete();
-        return redirect()->back();
+        return back()->with('success', 'Vehicle removed.');
     }
 }
-
-

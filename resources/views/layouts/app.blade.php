@@ -22,7 +22,7 @@
 
 @guest
     @if (!Route::is('login') && !Route::is('register') && !Route::is('password.request'))
-        <header class="sticky top-0 z-50 bg-white shadow-sm p-2">
+        <header class="position:sticky top-0 z-50 bg-white shadow-sm p-2">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <a href="{{ route('landing') }}" class="flex items-center gap-2 font-semibold text-lg">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">P</span>
@@ -53,7 +53,7 @@
 <div class="flex flex-1 overflow-hidden">
 
     {{-- SIDEBAR --}}
-        <aside id="sidebar" class="w-64 min-h-screen bg-white border-r border-dotted shadow-sm flex flex-col shrink-0 transition-all duration-300 overflow-x-hidden">
+        <aside id="sidebar" class="w-64 min-h-screen bg-green-100 border-r border-dotted shadow-sm flex flex-col shrink-0 transition-all px-0 duration-300 overflow-x-hidden">
 
         <div class="h-16 flex items-center gap-2 px-4 border-b border-gray-200 shrink-0">     
             <span class="sidebar-text font-semibold text-lg whitespace-nowrap transition-opacity duration-300">
@@ -67,9 +67,29 @@
         </div>
 
         <nav class="flex-1 px-2 py-4 space-y-6 overflow-y-auto">
+            @if (auth()->user()->hasAdminAccess())
+            <div class="space-y-1 pt-4 border-t border-gray-50 ">
+                    <p class="px-3 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate sidebar-text">
+                        Administration
+                    </p>
+                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Admin Panel</span>
+                    </a>
+                    <a href="{{ route('admin.parking-locations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Parking Locations</span>
+                    </a>
+                    <a href="{{ route('admin.parking-slots.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Parking Slots</span>
+                    </a>
+                    <a href="{{ route('admin.reservations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Reservations</span>
+                    </a>
+            </div>
+
+            @else
             <div class="space-y-1">
                 <a href="{{ route('home') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
-                    <span class="sidebar-text truncate">Home</span>
+                    <span class="sidebar-text truncate">Dashboard</span>
                 </a>
                 <a href="{{ route('parking.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
                     <span class="sidebar-text truncate">Parking</span>
@@ -84,16 +104,6 @@
                     <span class="sidebar-text truncate">Subscription</span>
                 </a>
             </div>
-
-            @if (auth()->user()->hasAdminAccess())
-                <div class="space-y-1 pt-4 border-t border-gray-50">
-                    <p class="px-3 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate sidebar-text">
-                        Administration
-                    </p>
-                    <a href="{{ route('admin.dashboard') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-orange-600 hover:bg-orange-50 transition sidebar-link">
-                        <span class="sidebar-text truncate">Admin Panel</span>
-                    </a>
-                </div>
             @endif
         </nav>
 
@@ -113,7 +123,32 @@
 
     {{-- MAIN CONTENT --}}
     <main class="flex-1 overflow-y-auto bg-gray-50">
-        <div class="max-w-7xl mx-auto my-auto px-6 py-1 lg:px-10">
+
+@if (!Route::is('profile.edit'))
+    <header class="h-15 w-full bg-green-200 border-b border-dotted shadow-sm flex items-center justify-between px-4 shrink-0 transition-all duration-300">
+
+
+        <div class="flex items-center gap-2">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">
+                P
+            </span>  
+            <span class="text-2xl pl-2 font-semibold whitespace-nowrap transition-opacity duration-300">
+                @yield('title')
+            </span>
+        </div>
+
+            <div id="profile" class="flex items-center gap-3">
+                <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
+                <a href="{{ route('profile.edit') }}" class="block">
+                <img src="{{ auth()->user()->profile?->profile_picture_url }}"
+                    class="h-8 w-8 rounded-full object-cover border"
+                    alt="Profile Picture">
+                </a>
+            </div>
+        
+    </header>
+@endif
+        <div class="max-w-7xl my-auto py-1">
 
             @if (session('success'))
                 <div class="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">

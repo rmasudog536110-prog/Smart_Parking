@@ -3,20 +3,10 @@
 @section('title', 'Admin – Reservations')
 
 @section('content')
-    <div class="mb-4 flex items-center justify-between gap-4">
-        <div>
-            <h1 class="text-xl font-semibold text-gray-900">
-                Reservations
-            </h1>
-            <p class="text-xs text-gray-500">
-                View and manage reservations across all users and locations.
-            </p>
-        </div>
-    </div>
 
-    <div class="bg-white rounded-lg border border-gray-200 p-4">
+    <div class="bg-white rounded-lg border border-gray-200 p-6 mt-10 mb-10 mx-auto max-w-4xl shadow-lg">
         @if ($reservations->isEmpty())
-            <p class="text-xs text-gray-500">
+            <p class="text-sm text-gray-800">
                 No reservations found.
             </p>
         @else

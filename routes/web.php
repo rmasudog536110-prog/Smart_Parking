@@ -10,10 +10,12 @@ use App\Http\Controllers\User\ContactsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AdminParkLocController;
 use App\Http\Controllers\Admin\AdminParkingSlotController;
-use App\Http\Controllers\Admin\AdminReservationsController;
+use App\Http\Controllers\Admin\AdminReservationController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Staff\StaffDashboardController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +24,6 @@ Route::view('/', 'landing')->name('landing');
 
 Route::get('/login', [RegisteredUserController::class, 'showLogin'])->name('login');
 Route::post('/login', [RegisteredUserController::class, 'login'])->name('login.submit');
-
-Route::post('/login', [AuthenticatedSessionController::class, 'store'])
-    ->name('login.store');
 
 Route::get('/register', [RegisteredUserController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'register'])->name('register.submit');
@@ -55,42 +54,59 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/contact', [ContactsController::class, 'store'])
         ->name('contact.store');
+
     // Vehicles
-    Route::resource('vehicles', VehicleController::class)
-        ->except(['show']);
+    Route::resource('vehicles', VehicleController::class)->only(['index', 'store', 'destroy']);
 
     // Reservations
-    Route::resource('reservations', ReservationController::class);
+    Route::get('/reservations', [ReservationController::class, 'index'])
+        ->name('reservations.index');
 
-    Route::post('/reservations/{reservation}/create',
-        [ReservationController::class, 'create'])
+    Route::get('/reservations/create/{parkingLocation}', [ReservationController::class, 'create'])
         ->name('reservations.create');
 
-    Route::post('/reservations/{reservation}/start',
-        [ReservationController::class, 'start'])
+    Route::post('/reservations', [ReservationController::class, 'store'])
+        ->name('reservations.store');
+
+    Route::post('/reservations/{reservation}/start', [ReservationController::class, 'start'])
         ->name('reservations.start');
 
-    Route::post('/reservations/{reservation}/end',
-        [ReservationController::class, 'end'])
+    Route::post('/reservations/{reservation}/end', [ReservationController::class, 'end'])
         ->name('reservations.end');
 
-    // Payments
-    Route::post('/payments/{reservation}',
-        [PaymentController::class, 'store'])
-        ->name('payments.store');
+    Route::delete('/reservations/{reservation}', [ReservationController::class, 'destroy'])
+        ->name('reservations.destroy');
+        
+    Route::get('payment/{plan}', [PaymentController::class, 'paymentForm'])
+        ->name('payment.form');
+
+    Route::post('payment', [PaymentController::class, 'store'])
+        ->name('payment.store');
 
     // Subscriptions
     Route::get('/subscription',
         [SubscriptionController::class, 'index'])
         ->name('subscription.index');
 
-    Route::post('/subscription/subscribe',
-        [SubscriptionController::class, 'subscribe'])
-        ->name('subscription.subscribe');
+    Route::post('/subscription/show',
+        [SubscriptionController::class, 'show'])
+        ->name('subscription.show');
 
     Route::post('/subscription/cancel',
         [SubscriptionController::class, 'cancel'])
         ->name('subscription.cancel');
+
+    //Proflile
+    Route::middleware('auth')->group(function () {
+        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    });
+
+    Route::middleware(['auth', 'staff'])->prefix('staff')->name('staff.')->group(function () {
+        Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
+        Route::post('/scan', [StaffDashboardController::class, 'scan'])->name('scan');
+        Route::post('/reservations/{reservation}/status', [StaffDashboardController::class, 'updateStatus'])->name('reservations.status');
+    });
 });
 
 //Admin
@@ -116,6 +132,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::resource('reservations',
             AdminReservationController::class)
             ->only(['index', 'show', 'destroy']);
+        
+        Route::get('/admin/reservations/scan/{id}/{token}', [AdminReservationController::class, 'scan'])
+        ->name('admin.reservations.scan');
 
         // Users
         Route::resource('users',
