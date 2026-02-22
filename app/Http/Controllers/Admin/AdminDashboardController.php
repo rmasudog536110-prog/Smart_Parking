@@ -16,8 +16,8 @@ class AdminDashboardController extends Controller
     {
         $stats = [
             'total_users' => User::where('role', 'customer')->count(),
-            'total_revenue' => Payment::where('status', 'approved')->sum('amount'),
-            'revenue_this_month' => Payment::where('status', 'approved')
+            'total_revenue' => Payment::where('payment_status', 'paid')->sum('amount'),
+            'revenue_this_month' => Payment::where('payment_status', 'paid')
                 ->whereMonth('created_at', now()->month)
                 ->sum('amount'),
             'pending_reservations' => Reservation::where('status', 'pending')->count(),
@@ -52,7 +52,7 @@ class AdminDashboardController extends Controller
             ->take(5)
             ->get();
 
-        $pendingPayments = Reservation::where('status', 'awaiting_payment')
+        $pendingPayments = Reservation::where('status', 'pending')
             ->with(['user', 'slot', 'payment'])
             ->latest()
             ->get();
@@ -64,7 +64,7 @@ class AdminDashboardController extends Controller
 
     public function charts()
     {
-        $revenueMonthly = Payment::where('status', 'approved')
+        $revenueMonthly = Payment::where('payment_status', 'paid')
         ->selectRaw('SUM(amount) as total, MONTHNAME(created_at) as month')
         ->where('created_at', '>=', now()->subMonths(6))
         ->groupBy('month')

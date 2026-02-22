@@ -30,21 +30,22 @@ class Subscription extends Model
 
     public function freeHoursUsedThisWeek(): float
     {
-        return auth()->user()->reservations()
+        return $this->user->reservations()
             ->where('is_free', true)
-            ->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])
+            ->where('status', 'completed')
+            ->whereBetween('start_time', [now()->startOfWeek(), now()->endOfWeek()])
             ->get()
-            ->sum(fn($r) => $r->start_time->diffInHours($r->end_time));
-    }
-
-    public function hasFreeHoursLeft(): bool
-    {
-        return $this->status === 'active' && $this->freeHoursUsedThisWeek() < 5;
+            ->sum(fn($r) => (float) $r->free_hours);
     }
 
     public function freeHoursLeft(): float
     {
-        return max(0, 5 - $this->freeHoursUsedThisWeek());
+        $weeklyLimit = $this->plan->free_hours_per_week ?? 0;
+        return max(0, $weeklyLimit - $this->freeHoursUsedThisWeek());
     }
 
+    public function hasFreeHoursLeft(): bool
+    {
+        return $this->status === 'active' && $this->freeHoursLeft() > 0;
+    }
 }

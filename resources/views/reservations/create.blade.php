@@ -70,7 +70,7 @@
                         </div>
                     @else
                         <select name="vehicle_id" required
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            class="w-full h-10 px-3 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             @foreach ($vehicles as $vehicle)
                                 <option value="{{ $vehicle->id }}" {{ old('vehicle_id') == $vehicle->id ? 'selected' : '' }}>
                                     {{ $vehicle->plate_num }} - {{ $vehicle->model }}
@@ -80,24 +80,30 @@
                     @endif
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
-                        <input type="datetime-local" name="start_time" required
-                            value="{{ old('start_time') }}"
-                            class="w-full rounded-md border-gray-300 shadow-sm">
+                {{-- Payment Method --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        @foreach (['gcash' => 'GCash', 'maya' => 'Maya', 'card' => 'Card', 'cash' => 'Cash'] as $value => $label)
+                            <label class="relative flex items-center justify-center gap-2 border-2 rounded-lg p-3 cursor-pointer transition
+                                {{ old('payment_method') === $value ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300' }}">
+                                <input type="radio" name="payment_method" value="{{ $value }}"
+                                    class="absolute opacity-0 w-0 h-0"
+                                    {{ old('payment_method') === $value ? 'checked' : '' }}
+                                    onchange="document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('border-blue-500','bg-blue-50'));
+                                            this.closest('label').classList.add('border-blue-500','bg-blue-50')">
+                                <span class="text-sm font-medium text-gray-700 payment-option">{{ $label }}</span>
+                            </label>
+                        @endforeach
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">End Time</label>
-                        <input type="datetime-local" name="end_time" required
-                            value="{{ old('end_time') }}"
-                            class="w-full rounded-md border-gray-300 shadow-sm">
-                    </div>
+                    @error('payment_method')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <button type="submit"
                     @if ($vehicles->isEmpty() || $slots->isEmpty()) disabled @endif
-                    class="w-full py-3 rounded-lg font-bold transition {{ $vehicles->isEmpty() || $slots->isEmpty() ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-700' }}">
+                    class="w-full py-3 rounded-lg font-bold transition cursor-pointer {{ $vehicles->isEmpty() || $slots->isEmpty() ? 'bg-gray-300 cursor-not-allowed text-gray-500' : 'bg-blue-600 text-white hover:bg-blue-700' }}">
                     Confirm Reservation
                 </button>
             </div>
@@ -125,16 +131,18 @@
                 </div>
 
                 @if ($subscription->status === 'active')
-                    @php $freeHoursLeft = $subscription->freeHoursLeft(); @endphp
-                    <div class="p-3 rounded-md text-[11px] leading-relaxed {{ $freeHoursLeft > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500' }}">
-                        <i class="fa-solid fa-clock mr-1"></i>
-                        @if ($freeHoursLeft > 0)
-                            You have <strong>{{ number_format($freeHoursLeft, 1) }} hours for free</strong> remaining this week.
-                            Parking within this limit will be free of charge.
-                        @else
-                            You have used all your free hours for this week. Normal rates apply.
-                        @endif
-                    </div>
+                    @if ($subscription->plan_id !== 1)                   
+                        @php $freeHoursLeft = $subscription->freeHoursLeft(); @endphp
+                        <div class="p-3 rounded-md text-[11px] leading-relaxed {{ $freeHoursLeft > 0 ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500' }}">
+                            <i class="fa-solid fa-clock mr-1"></i>
+                            @if ($freeHoursLeft > 0)
+                                You have <strong>{{ number_format($freeHoursLeft, 1) }} hours for free</strong> remaining this week.
+                                Parking within this limit will be free of charge.
+                            @else
+                                You have used all your free hours for this week. Normal rates apply.
+                            @endif
+                        </div>
+                    @endif
                 @endif
             </div>
         </div>

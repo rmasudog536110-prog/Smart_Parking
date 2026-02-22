@@ -22,22 +22,23 @@ class PaymentController extends Controller
         $request->validate([
             'plan_id'        => 'required|exists:subscription_plans,id',
             'amount'         => 'required|numeric|min:0',
-            'payment_method' => 'required|in:credit_card,debit_card,paypal,gcash,cash',
-        ]);
-
-        Payment::create([
-            'amount'         => $request->amount,
-            'payment_method' => $request->payment_method,
-            'status'         => 'pending',
+            'payment_method' => 'required|in:gcash,maya,card,cash',
         ]);
 
         $plan = SubscriptionPlan::findOrFail($request->plan_id);
+
+        Payment::create([
+            'reservation_id'     => null,
+            'paymongo_reference' => null,
+            'amount'             => $request->amount,
+            'payment_method'     => $request->payment_method,
+            'payment_status'     => 'processing',
+        ]);
 
         Subscription::updateOrCreate(
             ['user_id' => auth()->id()],
             [
                 'plan_id'   => $plan->id,
-                'plan_name' => $plan->name,
                 'price'     => $plan->price,
                 'starts_at' => now(),
                 'ends_at'   => now()->addDays($plan->duration),
@@ -46,6 +47,6 @@ class PaymentController extends Controller
         );
 
         return redirect()->route('subscription.index')
-            ->with('success', 'Payment submitted. Your subscription will be activated once payment is confirmed.');
+            ->with('success', 'Payment submitted. Your subscription will be activated once confirmed.');
     }
 }

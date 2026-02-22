@@ -41,7 +41,7 @@
         }
 
         .back-button:hover i {
-            transform: translateX(-4px); /* group-hover:-translate-x-1 */
+            transform: translateX(-4px); 
         }
 
         .card {

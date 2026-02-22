@@ -20,9 +20,9 @@ return new class extends Migration
             $table->decimal('total_amount', 8, 2)->default(0);
             $table->decimal('free_hours', 5, 2)->default(0);
             $table->decimal('paid_hours', 5, 2)->default(0);
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->enum('status', ['pending','active', 'completed', 'cancelled'])->default('active');
+            $table->dateTime('start_time')->nullable();
+            $table->dateTime('end_time')->nullable();
+            $table->enum('status', ['pending','active', 'completed', 'cancelled'])->default('pending');
             $table->timestamps();
         });
     }
@@ -33,6 +33,6 @@ return new class extends Migration
     public function down(): void
     {
         //
-        Schema::dropIfExists('reservation');
+        Schema::dropIfExists('reservations');
     }
 };

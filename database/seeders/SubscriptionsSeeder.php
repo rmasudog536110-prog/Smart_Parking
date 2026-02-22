@@ -18,6 +18,7 @@ class SubscriptionsSeeder extends Seeder
                 'name' => 'Free Plan',
                 'description' => 'Ideal for casual drivers who need occasional parking access.',
                 'price' => 0.00,
+                'free_hours_per_week' => 0.00,
                 'duration' => 30,
                 'features' => json_encode([
                     'Access to standard parking slots',
@@ -26,13 +27,13 @@ class SubscriptionsSeeder extends Seeder
                 ]),
                 'is_active' => true,
                 'free_trial' => true,
-                'duration_days' => 30,
             ],
 
             [
                 'name' => 'Basic Plan',
                 'description' => 'Perfect for regular drivers who want priority booking and extended access.',
                 'price' => 199.00,
+                'free_hours_per_week' => 5.00,
                 'duration' => 30,
                 'features' => json_encode([
                     'Everything in Free Plan',
@@ -42,13 +43,13 @@ class SubscriptionsSeeder extends Seeder
                 ]),
                 'is_active' => true,
                 'free_trial' => false,
-                'duration_days' => null,
             ],
 
             [
                 'name' => 'Premium Plan',
                 'description' => 'Best for frequent users who want VIP parking benefits and premium support.',
                 'price' => 399.00,
+                'free_hours_per_week' => 10.00,
                 'duration' => 30,
                 'features' => json_encode([
                     'Everything in Basic Plan',
@@ -59,7 +60,6 @@ class SubscriptionsSeeder extends Seeder
                 ]),
                 'is_active' => true,
                 'free_trial' => false,
-                'duration_days' => null,
             ],
 
         ]);

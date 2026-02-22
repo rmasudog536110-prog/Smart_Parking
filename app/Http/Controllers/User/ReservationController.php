@@ -50,64 +50,41 @@ class ReservationController extends Controller
 
     public function store(Request $request)
     {
-        if (!$this->hasActiveSubscription()) {
-            return redirect()->route('subscription.index')
-                ->with('error', 'You need an active subscription to make a reservation.');
-        }
-
-        $hasActiveReservation = auth()->user()->reservations()
-            ->whereIn('status', ['pending', 'active'])
-            ->exists();
-
-        if ($hasActiveReservation) {
-            return redirect()->route('reservations.index')
-                ->with('error', 'You already have an active reservation. Please complete or cancel it before making a new one.');
-        }
-
         $request->validate([
-            'slot_id'    => 'required|exists:parking_slots,id',
-            'vehicle_id' => 'required|exists:vehicle,id',
-            'start_time' => 'required|date|after:now',
-            'end_time'   => 'required|date|after:start_time',
+            'slot_id'             => 'required|exists:parking_slots,id',
+            'vehicle_id'          => 'required|exists:vehicle,id',
+            'parking_location_id' => 'required|exists:parking_locations,id',
+            'payment_method'      => 'required|in:gcash,maya,card,cash',
         ]);
 
-        $subscription = auth()->user()->subscription;
-        $startTime = \Carbon\Carbon::parse($request->start_time);
-        $endTime = \Carbon\Carbon::parse($request->end_time);
-        $requestedHours = $startTime->diffInHours($endTime);
-
-        $freeHoursLeft = $subscription->freeHoursLeft();
-        $freeHours = min($requestedHours, $freeHoursLeft);
-        $paidHours = max(0, $requestedHours - $freeHours);
-
-        $parkingSlot = ParkingSlot::findOrFail($request->slot_id);
-        $hourlyRate = max(20, $parkingSlot->location->hourly_rate);
-        $totalAmount = $paidHours * $hourlyRate;
-
-        Reservation::create([
-            'user_id'      => auth()->id(),
-            'vehicle_id'   => $request->vehicle_id,
-            'slot_id'      => $request->slot_id,
-            'start_time'   => $request->start_time,
-            'end_time'     => $request->end_time,
-            'status'       => 'pending',
-            'is_free'      => $paidHours == 0,
-            'total_amount' => $totalAmount,
-            'free_hours'   => $freeHours,
-            'paid_hours'   => $paidHours,
-        ]);
-
-        $parkingSlot->update(['status' => 'reserved']);
-
-        if ($totalAmount == 0) {
-            return redirect()->route('reservations.index')
-                ->with('success', 'Reservation confirmed! Your free hours cover the full duration.');
+        // Check slot is still available
+        $slot = ParkingSlot::findOrFail($request->slot_id);
+        if ($slot->status !== 'available') {
+            return back()->withErrors(['slot_id' => 'This slot is no longer available.']);
         }
+
+        $reservation = Reservation::create([
+            'user_id'    => auth()->id(),
+            'slot_id'    => $request->slot_id,
+            'vehicle_id' => $request->vehicle_id,
+            'status'     => 'pending',
+            'is_free'    => false,
+        ]);
+
+        // Create payment record
+        Payment::create([
+            'reservation_id' => $reservation->id,
+            'amount'         => 0, // calculated at checkout
+            'payment_method' => $request->payment_method,
+            'payment_status' => 'unpaid',
+        ]);
+
+        // Mark slot as reserved
+        $slot->update(['status' => 'reserved']);
 
         return redirect()->route('reservations.index')
-            ->with('success', 'Reservation created. Please proceed to payment.');
+            ->with('success', 'Reservation created. Show your QR code at the entrance.');
     }
-
     public function start(Reservation $reservation)
     {
         $reservation->update(['status' => 'active']);

@@ -10,7 +10,7 @@ class Payment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'amount', 'payment_method', 'status'
+        'reservation_id','paymongo_reference','amount', 'payment_method', 'payment_status'
     ];
 
     public function reservation()

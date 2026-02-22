@@ -16,7 +16,9 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Staff\StaffDashboardController;
+use App\Http\Controllers\Staff\StaffPaymentController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Admin\AdminPaymentController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -115,6 +117,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/scan', function () {return view('staff.scan');})->name('scan.page');
         Route::post('/scan', [StaffDashboardController::class, 'scan'])->name('scan');
         Route::post('/reservations/{reservation}/status', [StaffDashboardController::class, 'updateStatus'])->name('reservations.status');
+        Route::get('/payments', [StaffPaymentController::class, 'index'])->name('payments.index');
+        Route::patch('/payments/{reservation}/mark-paid', [StaffPaymentController::class, 'markPaid'])->name('payments.markPaid');
+        Route::patch('/payments/{reservation}/refund', [StaffPaymentController::class, 'refund'])->name('payments.refund');
+
     });
 });
 
@@ -149,5 +155,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::resource('users',
             AdminUserController::class)
             ->only(['index', 'show', 'update', 'destroy']);
+
+        // Subscriptions
+        Route::get('/subscriptions', [AdminPaymentController::class, 'index'])->name('subscriptions.index');
+        Route::patch('/subscriptions/{subscription}/approve', [AdminPaymentController::class, 'approve'])->name('subscriptions.approve');
+        Route::patch('/subscriptions/{subscription}/reject', [AdminPaymentController::class, 'reject'])->name('subscriptions.reject');
+
 });
 

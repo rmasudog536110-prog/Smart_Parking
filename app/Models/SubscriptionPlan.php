@@ -10,6 +10,7 @@ class SubscriptionPlan extends Model
         'name',
         'description',
         'price',
+        'free_hours_per_week',
         'duration',
         'features',
         'is_active'

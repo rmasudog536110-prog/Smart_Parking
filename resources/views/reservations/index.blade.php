@@ -3,21 +3,30 @@
 @section('title', 'My Reservations')
 
 @section('content')
-<section class="space-y-6 p-6">
-    <div class="grid grid-cols-2 bg-white rounded-lg border border-gray-200 p-6 ml-6">
+<section class="p-6">
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-semibold text-gray-900">My Reservations</h2>
+            <a href="{{ route('parking.index') }}"
+                class="inline-flex items-center px-3 py-2 rounded-md bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700">
+                Browse Parking Locations
+            </a>
+        </div>
+
         @if ($reservations->isEmpty())
-            <p class="text-md text-gray-500">You have no reservations yet.</p>
+            <p class="text-sm text-gray-500">You have no reservations yet.</p>
         @else
             <div class="overflow-x-auto">
-                <table class="min-w-full text-sm">
+                <table class="w-full text-sm">
                     <thead>
-                        <tr class="text-left text-gray-500 border-b">
-                            <th class="py-2 pr-4">Location</th>
-                            <th class="py-2 pr-4">Slot</th>
-                            <th class="py-2 pr-4">Vehicle</th>
-                            <th class="py-2 pr-4">Time</th>
-                            <th class="py-2 pr-4">Status</th>
-                            <th class="py-2 pr-0">Actions</th>
+                        <tr class="text-left text-gray-800 border-b">
+                            <th class="py-2 pr-4 text-lg">Location</th>
+                            <th class="py-2 pr-4 text-lg">Slot</th>
+                            <th class="py-2 pr-4 text-lg">Vehicle</th>
+                            <th class="py-2 pr-4 text-lg">Time</th>
+                            <th class="py-2 pr-4 text-lg">Status</th>
+                            <th class="py-2 text-lg text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
@@ -28,51 +37,46 @@
                                 $status = $reservation->status;
                                 $color = [
                                     'pending'   => 'bg-yellow-50 text-yellow-700',
-                                    'active'    => 'bg-green-50 text-green-700',
-                                    'completed' => 'bg-gray-100 text-gray-700',
+                                    'active'    => 'bg-blue-50 text-blue-700',
+                                    'completed' => 'bg-green-100 text-green-700',
                                     'cancelled' => 'bg-red-50 text-red-700',
                                 ][$status] ?? 'bg-gray-100 text-gray-700';
                             @endphp
-                            <tr>
-                                <td class="py-2 pr-4 text-gray-900">
-                                    {{ $location?->name ?? '—' }}
+                            <tr class="align-top">
+                                <td class="py-3 pr-4 text-gray-900">{{ $location?->name ?? '—' }}</td>
+                                <td class="py-3 pr-4 text-gray-700">
+                                    @if ($slot) #{{ $slot->slot_number }} ({{ ucfirst($slot->type) }}) @else — @endif
                                 </td>
-                                <td class="py-2 pr-4 text-gray-700">
-                                    @if ($slot)
-                                        #{{ $slot->slot_number }} ({{ ucfirst($slot->type) }})
-                                    @else
-                                        —
-                                    @endif
+                                <td class="py-3 pr-4 text-gray-700">{{ $reservation->vehicle?->plate_num ?? '—' }}</td>
+                                <td class="py-3 pr-4 text-gray-700 text-xs">
+                                    <span class="text-gray-400 text-[10px]">From</span>
+                                    <span class="block">{{ $reservation->start_time?->format('M d, Y h:i A') }}</span>
+                                    <span class="text-gray-400 text-[10px]">to</span>
+                                    <span class="block">{{ $reservation->end_time?->format('M d, Y h:i A') }}</span>
                                 </td>
-                                <td class="py-2 pr-4 text-gray-700">
-                                    {{ $reservation->vehicle?->plate_num ?? '—' }}
-                                </td>
-                                <td class="py-2 pr-4 text-gray-700">
-                                    {{ $reservation->start_time?->format('M d, Y h:i A') }}
-                                    –
-                                    {{ $reservation->end_time?->format('M d, Y h:i A') }}
-                                </td>
-                                <td class="py-2 pr-4">
-                                    <span class="inline-flex items-center rounded-full py-0.5 text-[11px] font-medium {{ $color }}">
+                                <td class="py-3 pr-4">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium {{ $color }}">
                                         {{ ucfirst($status) }}
                                     </span>
                                 </td>
-                                <td class="py-2 pr-5 text-right">
+                                <td class="py-3 text-right">
                                     @if (in_array($status, ['pending', 'active']))
-                                        <button
-                                            onclick="showQr('qr-modal-{{ $reservation->id }}')"
-                                            class="text-[11px] ml-0 mr-2text-blue-600 hover:text-blue-700 hover:underline font-medium cursor-pointer">
-                                            Show QR
-                                        </button>
-                                        <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}" class="mt-3"
-                                            onsubmit="return confirm('Are you sure you want to cancel your reservation?')">
-                                            @csrf
-                                            <div class="text-right">
-                                                <button class="w-40 bg-red-600 hover:bg-red-400 text-white text-sm py-2 px-4 rounded cursor-pointer">
-                                                    Cancel Reservation
+                                        <div class="flex flex-col items-end gap-2">
+                                            <button
+                                                onclick="showQr('qr-modal-{{ $reservation->id }}')"
+                                                class="text-md text-blue-600 hover:text-blue-700 hover:underline font-medium cursor-pointer">
+                                                Show QR <i class="fa-solid fa-qrcode ml-1"></i>
+                                            </button>
+                                            <form method="POST" action="{{ route('reservations.destroy', $reservation->id) }}"
+                                                onsubmit="return confirm('Are you sure you want to cancel your reservation?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                    class="text-md text-red-500 hover:text-red-700 hover:underline font-medium cursor-pointer">
+                                                    Cancel
                                                 </button>
-                                            </div>
-                                        </form>
+                                            </form>
+                                        </div>
                                     @endif
                                 </td>
                             </tr>
@@ -81,18 +85,10 @@
                 </table>
             </div>
         @endif
-        <div class="text-right">
-            <button>
-                <a href="{{ route('parking.index') }}"
-                    class="inline-flex items-center px-3 py-2 rounded-md bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700">
-                    Browse Parking Locations
-                </a>
-            </button>
-        </div>
     </div>
 </section>
 
-{{-- Modals rendered outside the table --}}
+{{-- Modals --}}
 @foreach ($reservations as $reservation)
     @if (in_array($reservation->status, ['pending', 'active']))
         @php
@@ -100,12 +96,9 @@
             $location = $slot?->location;
             $status = $reservation->status;
         @endphp
-        <div id="qr-modal-{{ $reservation->id }}"
-            class="fixed inset-0 z-50 hidden"
-            style="display:none">
+        <div id="qr-modal-{{ $reservation->id }}" class="fixed inset-0 z-50" style="display:none">
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center">
                 <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 overflow-hidden">
-
                     <div class="bg-blue-600 px-6 py-4 flex items-center justify-between">
                         <div>
                             <p class="text-white font-bold text-base">Reservation #{{ $reservation->id }}</p>
@@ -160,22 +153,18 @@
 
 <script>
     function showQr(id) {
-        const modal = document.getElementById(id);
-        modal.style.display = 'block';
+        document.getElementById(id).style.display = 'block';
         document.body.style.overflow = 'hidden';
     }
 
     function hideQr(id) {
-        const modal = document.getElementById(id);
-        modal.style.display = 'none';
+        document.getElementById(id).style.display = 'none';
         document.body.style.overflow = '';
     }
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
-            document.querySelectorAll('[id^="qr-modal-"]').forEach(el => {
-                el.style.display = 'none';
-            });
+            document.querySelectorAll('[id^="qr-modal-"]').forEach(el => el.style.display = 'none');
             document.body.style.overflow = '';
         }
     });

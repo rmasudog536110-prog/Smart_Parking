@@ -16,11 +16,11 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('free_hours_per_week', 5, 2)->default(0);
             $table->integer('duration')->default(30);
             $table->json('features')->nullable();
             $table->boolean('is_active')->default(true);
             $table->boolean('free_trial')->default(false);
-            $table->integer('duration_days')->nullable(); 
             $table->timestamps();
         });
     }
