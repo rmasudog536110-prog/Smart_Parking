@@ -95,7 +95,7 @@
                             type="email"
                             name="email"
                             required
-                            class="block w-full h-10 px-3 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                            class="block w-full min-h-[100px] px-3 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
                             placeholder="you@example.com"
                             value="{{ old('email') }}"
                         >
@@ -110,7 +110,7 @@
                             name="message"
                             rows="4"
                             required
-                            class="block w-full h-10 px-3 py-2 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                            class="block w-full min-h-[100px] px-3 py-2 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
                             placeholder="Tell us how we can help..."
                         >{{ old('message') }}</textarea>
                     </div>

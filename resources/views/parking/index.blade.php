@@ -24,7 +24,7 @@
                         class="w-full h-10 p-2 md:w-72 rounded-md border-gray-300 text-sm shadow-sm focus:border-orange-500 focus:ring-orange-500"
                     >
                     <button type="submit"
-                            class="inline-flex items-center px-3 py-2 rounded-md bg-gray-900 text-white text-xs font-semibold shadow-sm hover:bg-black">
+                            class="inline-flex items-center px-3 py-2 rounded-md bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700 cursor-pointer">
                         Search
                     </button>
                 </form>
@@ -34,8 +34,12 @@
 
     <section class="space-y-6 p-6">
         @if ($locations->isEmpty())
-            <div class="bg-white rounded-lg border border-dashed border-gray-300 text-sm text-gray-500">
-                No parking locations found.
+            <div class="bg-white rounded-lg border border-dashed border-gray-300 p-6 text-sm text-gray-500">
+                @if(request('q'))
+                    No parking locations found for <span class="font-semibold text-gray-700">"{{ request('q') }}"</span>.
+                @else
+                    No parking locations are available yet.
+                @endif
             </div>
         @else
             <div class="grid gap-1 md:grid-cols-2 lg:grid-cols-3">

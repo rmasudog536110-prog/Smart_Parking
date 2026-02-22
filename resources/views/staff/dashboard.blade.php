@@ -1,149 +1,133 @@
 @extends('layouts.app')
 
-@section('title', 'Staff Dashboard')
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="p-6 space-y-6">
 
-    <div>
-        <h1 class="text-2xl font-bold text-gray-900">Staff Dashboard</h1>
-        <p class="text-sm text-gray-500">Monitor parking activity and scan customer reservations.</p>
-    </div>
-
-    @if (session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
     {{-- Stats --}}
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Reserved</p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">{{ $totalReserved }}</p>
-            <p class="text-xs text-gray-400 mt-1">Pending + Active</p>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Active Now</p>
-            <p class="text-3xl font-bold text-green-600 mt-1">{{ $totalActive }}</p>
-            <p class="text-xs text-gray-400 mt-1">Currently parked</p>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Completed Today</p>
-            <p class="text-3xl font-bold text-blue-600 mt-1">{{ $totalCompleted }}</p>
-            <p class="text-xs text-gray-400 mt-1">Checked out today</p>
-        </div>
-        <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold">Cancelled Today</p>
-            <p class="text-3xl font-bold text-red-500 mt-1">{{ $totalCancelled }}</p>
-            <p class="text-xs text-gray-400 mt-1">Cancelled today</p>
-        </div>
-    </div>
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
 
-    <div class="grid lg:grid-cols-[2fr,1fr] gap-6">
-
-        {{-- QR Scanner --}}
-        <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-            <div class="px-6 py-4 border-b border-gray-100">
-                <h2 class="text-sm font-semibold text-gray-900">QR Scanner</h2>
-                <p class="text-xs text-gray-500 mt-0.5">Scan a customer's QR code to view and update their reservation.</p>
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide font-semibold text-gray-500">Reserved</p>
+                        <p class="text-xs text-gray-400 mt-1">Pending + Active</p>
+                    </div>
+                    <p class="text-3xl font-bold text-black">{{ $totalReserved }}</p>
+                </div>
             </div>
-            <div class="p-6 space-y-4">
-                <div id="scanner-container" class="relative w-full rounded-xl overflow-hidden bg-gray-900" style="height: 280px;">
-                    <video id="scanner-video" class="w-full h-full object-cover" playsinline></video>
-                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                        <div class="w-48 h-48 border-2 border-white/60 rounded-xl relative">
-                            <span class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-400 rounded-tl-lg"></span>
-                            <span class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-400 rounded-tr-lg"></span>
-                            <span class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-400 rounded-bl-lg"></span>
-                            <span class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-400 rounded-br-lg"></span>
-                        </div>
-                    </div>
-                    <div id="scanner-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-white bg-gray-900">
-                        <i class="fa-solid fa-qrcode text-4xl mb-3 text-gray-400"></i>
-                        <p class="text-sm text-gray-400">Camera not started</p>
-                    </div>
-                </div>
 
-                <div class="flex gap-2">
-                    <button id="start-scanner"
-                        onclick="startScanner()"
-                        class="flex-1 py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition">
-                        <i class="fa-solid fa-camera mr-2"></i>Start Scanner
-                    </button>
-                    <button id="stop-scanner"
-                        onclick="stopScanner()"
-                        class="flex-1 py-2 px-4 bg-gray-200 hover:bg-gray-300 text-gray-700 text-sm font-semibold rounded-lg transition hidden">
-                        <i class="fa-solid fa-stop mr-2"></i>Stop
-                    </button>
-                </div>
-
-                {{-- Scan Result --}}
-                <div id="scan-result" class="hidden">
-                    <div class="border border-gray-200 rounded-xl overflow-hidden">
-                        <div id="result-header" class="px-4 py-3 flex items-center justify-between">
-                            <div>
-                                <p id="result-name" class="font-semibold text-sm text-gray-900"></p>
-                                <p id="result-location" class="text-xs text-gray-500 mt-0.5"></p>
-                            </div>
-                            <span id="result-status" class="text-[11px] font-bold px-2 py-0.5 rounded-full"></span>
-                        </div>
-                        <div class="px-4 pb-4 space-y-2 text-xs text-gray-600">
-                            <div class="flex justify-between"><span class="text-gray-400">Vehicle</span><span id="result-vehicle" class="font-medium"></span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Slot</span><span id="result-slot" class="font-medium"></span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Start</span><span id="result-start" class="font-medium"></span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">End</span><span id="result-end" class="font-medium"></span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Free Hours</span><span id="result-free-hours" class="font-medium text-green-600"></span></div>
-                            <div class="flex justify-between"><span class="text-gray-400">Amount Due</span><span id="result-amount" class="font-bold text-gray-900"></span></div>
-                        </div>
-                        <div id="result-actions" class="px-4 pb-4 flex gap-2"></div>
+            <div class="bg-white rounded-xl border border-emerald-200 p-5 shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide font-semibold text-gray-500">Active Now</p>
+                        <p class="text-xs text-gray-400 mt-1">Currently parked</p>
                     </div>
+                    <p class="text-3xl font-bold text-emerald-600">{{ $totalActive }}</p>
                 </div>
+            </div>
 
-                <div id="scan-error" class="hidden p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-lg"></div>
+            <div class="bg-white rounded-xl border border-blue-200 p-5 shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide font-semibold text-gray-500">Completed Today</p>
+                        <p class="text-xs text-gray-400 mt-1">Checked out today</p>
+                    </div>
+                    <p class="text-3xl font-bold text-blue-600">{{ $totalCompleted }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs uppercase tracking-wide font-semibold text-gray-500">Cancelled Today</p>
+                        <p class="text-xs text-gray-400 mt-1">Cancelled today</p>
+                    </div>
+                    <p class="text-3xl font-bold text-black">{{ $totalCancelled }}</p>
+                </div>
             </div>
         </div>
 
-        {{-- Slot Overview --}}
-        <div class="space-y-4">
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h2 class="text-sm font-semibold text-gray-900">Slot Status</h2>
-                </div>
-                <div class="p-4 space-y-3">
-                    @foreach(['available' => ['text-green-700', 'bg-green-50'], 'reserved' => ['text-yellow-700', 'bg-yellow-50'], 'occupied' => ['text-red-700', 'bg-red-50'], 'maintenance' => ['text-gray-600', 'bg-gray-100']] as $status => [$text, $bg])
+            <div class="grid grid-cols-2 lg:grid-cols-2 gap-4">
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="text-sm font-semibold text-gray-900">Slot Status</h2>
+                    </div>
+                    <div class="p-4 space-y-3">
+                        @foreach([
+                            'available' => ['text-emerald-700', 'bg-emerald-50'],
+                            'reserved' => ['text-blue-700', 'bg-blue-50'],
+                            'occupied' => ['text-black', 'bg-gray-100'],
+                            'maintenance' => ['text-gray-600', 'bg-gray-100']
+                        ] as $status => [$text, $bg])
+
                         <div class="flex items-center justify-between p-3 {{ $bg }} rounded-lg">
-                            <span class="text-xs font-semibold {{ $text }} capitalize">{{ $status }}</span>
-                            <span class="text-lg font-bold {{ $text }}">{{ $slotStats[$status] ?? 0 }}</span>
+                            <span class="text-xs font-semibold {{ $text }} capitalize">
+                                {{ $status }}
+                            </span>
+                            <span class="text-lg font-bold {{ $text }}">
+                                {{ $slotStats[$status] ?? 0 }}
+                            </span>
                         </div>
-                    @endforeach
-                </div>
-            </div>
 
-            <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
-                <div class="px-6 py-4 border-b border-gray-100">
-                    <h2 class="text-sm font-semibold text-gray-900">Slot Types</h2>
+                        @endforeach
+                    </div>
                 </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h2 class="text-sm font-semibold text-gray-900">Slot Types</h2>
+                    </div>
+
                 <div class="p-4 space-y-3">
+
                     @forelse($slotTypes as $type => $count)
-                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                            <span class="text-xs font-semibold text-gray-700 capitalize">{{ $type }}</span>
-                            <span class="text-lg font-bold text-gray-900">{{ $count }}</span>
+
+                        @php
+                            $colors = [
+                                'compact' => ['text-emerald-700', 'bg-emerald-50'],
+                                'large'   => ['text-blue-700', 'bg-blue-50'],
+                                'pwd'     => ['text-black', 'bg-gray-100'],
+                                'electric'=> ['text-yellow-600', 'bg-yellow-100'],
+                            ];
+
+                            [$text, $bg] = $colors[$type] ?? ['text-gray-700', 'bg-gray-50'];
+                        @endphp
+
+                        <div class="flex items-center justify-between p-3 {{ $bg }} rounded-lg">
+                            <span class="text-xs font-semibold {{ $text }} capitalize">
+                                {{ $type }}
+                            </span>
+
+                            <span class="text-lg font-bold {{ $text }}">
+                                {{ $count }}
+                            </span>
                         </div>
+
                     @empty
                         <p class="text-xs text-gray-400 italic">No slot types found.</p>
                     @endforelse
+
+                </div>
                 </div>
             </div>
-        </div>
-    </div>
-
+            
     {{-- Active Reservations Table --}}
     <div class="bg-white rounded-xl border border-gray-200 shadow-sm">
-        <div class="px-6 py-4 border-b border-gray-100">
-            <h2 class="text-sm font-semibold text-gray-900">Active & Pending Reservations</h2>
-            <p class="text-xs text-gray-500 mt-0.5">All current reservations across all locations.</p>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="px-6 py-4 border-b border-gray-100">
+                <h2 class="text-lg font-semibold text-gray-900">Active & Pending Reservations</h2>
+                <p class="text-sm text-gray-500 mt-0.5">All current reservations across all locations.</p>
+            </div>
+            <div class="justify-end flex items-center px-6 p-4 border-b border-gray-100 text-lg">
+                <a href="{{ route('staff.scan.page') }}" class="flex items-center gap-2 text-gray-700 hover:text-blue-800 px-2 py-4 hover:text-xl transition">
+                    Scan QR <i class="fa-solid fa-qrcode"></i>
+                 </a>
+                 
+            </div>
         </div>
+  
         <div class="p-4">
             @if ($reservations->isEmpty())
                 <p class="text-sm text-gray-400 italic text-center py-6">No active reservations at the moment.</p>
@@ -179,9 +163,9 @@
                                     <td class="py-3 pr-4 text-gray-600">
                                         {{ $r->start_time?->format('h:i A') }} – {{ $r->end_time?->format('h:i A') }}
                                     </td>
-                                    <td class="py-3 pr-4 text-gray-900 font-semibold">
+                                    <td class="py-3 pr-4 text-right font-semibold text-black">
                                         @if ($r->is_free)
-                                            <span class="text-green-600">Free</span>
+                                            <span class="text-emerald-600">Free</span>
                                         @else
                                             ₱{{ number_format($r->total_amount, 2) }}
                                         @endif

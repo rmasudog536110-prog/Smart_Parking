@@ -10,22 +10,6 @@
         <p class="text-sm text-gray-500">Update your personal information and profile picture.</p>
     </div>
 
-    @if (session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
-            <ul class="list-disc list-inside space-y-1">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
     <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
         @csrf
         @method('PUT')
@@ -39,12 +23,12 @@
             <div class="flex items-center gap-6">
                 <div class="relative">
                     <img id="preview"
-                        src="{{ auth()->user()->profile?->profile_picture_url }}"
-                        class="w-24 h-24 rounded-full object-cover border-4 border-gray-100 shadow"
+                        src="{{ auth()->user()->profile_picture_url }}"
+                        class="w-24 h-24 rounded-full object-cover border-4 border-gray-100 shadow hover:ring-2 hover:ring-blue-500 cursor-pointer"
                         alt="Profile Picture">
 
                     <label for="profile_picture"
-                        class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full w-7 h-7 flex items-center justify-center cursor-pointer shadow transition">
+                        class="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full w-7 h-7 flex items-center hover:w-9 hover:right-1 hover:h-9 transition justify-center cursor-pointer shadow transition">
                         <i class="fa-solid fa-pen text-[10px]"></i>
                     </label>
                 </div>
@@ -96,7 +80,7 @@
 
         <div class="flex justify-end">
             <button type="submit"
-                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow transition">
+                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg shadow transition cursor-pointer">
                 Save Changes
             </button>
         </div>

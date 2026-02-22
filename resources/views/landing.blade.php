@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="max-h-[100vh] flex items-center justify-center px-4">
+<div class="min-h-screen flex items-center justify-center px-4 py-12">
     <div class="max-w-5xl w-full text-center space-y-12">
 
         {{-- Hero --}}
@@ -13,36 +13,36 @@
                 🚗 Smart Parking System
             </p>
 
-            <h1 class="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight">
+            <h1 class="text-3xl sm:text-5xl font-bold text-gray-900 leading-tight">
                 Park smarter, <span class="text-orange-500">not harder</span>.
             </h1>
 
             <p class="text-gray-600 text-base max-w-2xl mx-auto mb-4">
-                Find, reserve, and manage parking slots in real time.  
+                Find, reserve, and manage parking slots in real time.
                 No more guessing, circling, or wasting fuel — everything is in one smart system.
             </p>
         </section>
 
         {{-- Trust / Stats --}}
-        <section class="grid grid-cols-3 gap-6 text-sm text-center">
+        <section class="grid grid-cols-3 gap-4 text-sm text-center">
             <div class="space-y-1">
-                <p class="text-2xl font-bold text-gray-900">24/7</p>
-                <p class="text-gray-600">Real-time availability</p>
+                <p class="text-xl sm:text-2xl font-bold text-gray-900">24/7</p>
+                <p class="text-gray-600 text-xs sm:text-sm">Real-time availability</p>
             </div>
 
             <div class="space-y-1">
-                <p class="text-2xl font-bold text-gray-900">100%</p>
-                <p class="text-gray-600">Digital parking system</p>
+                <p class="text-xl sm:text-2xl font-bold text-gray-900">100%</p>
+                <p class="text-gray-600 text-xs sm:text-sm">Digital parking system</p>
             </div>
 
-            <div class="space-y-1 mb-4">
-                <p class="text-2xl font-bold text-gray-900">Fast</p>
-                <p class="text-gray-600">Reserve in a minute</p>
+            <div class="space-y-1">
+                <p class="text-xl sm:text-2xl font-bold text-gray-900">Fast</p>
+                <p class="text-gray-600 text-xs sm:text-sm">Reserve in a minute</p>
             </div>
         </section>
 
         {{-- Features --}}
-        <section class="grid gap-6 sm:grid-cols-3 text-left">
+        <section class="grid gap-4 sm:grid-cols-3 text-left">
             <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
                 <p class="font-semibold text-gray-900 mb-2">📡 Real-time slots</p>
                 <p class="text-sm text-gray-600">

@@ -5,18 +5,6 @@
 @section('content')
 <section class="space-y-6 p-6">
 
-    @if (session('success'))
-        <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
-            {{ session('error') }}
-        </div>
-    @endif
-
     <div class="bg-white rounded-lg border border-gray-200 p-6">
         <h2 class="text-lg font-semibold mb-4">Current Plan</h2>
 

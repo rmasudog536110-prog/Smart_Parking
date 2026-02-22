@@ -4,21 +4,9 @@
 
 @section('content')
 <section class="space-y-6 p-6">
-    @if (session('success'))
-        <div class="ml-6 bg-green-50 border border-green-200 text-green-700 rounded-lg p-4 text-sm">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="ml-6 bg-red-50 border border-red-200 text-red-700 rounded-lg p-4 text-sm">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div class="bg-white rounded-lg border border-gray-200 p-6 ml-6">
+    <div class="grid grid-cols-2 bg-white rounded-lg border border-gray-200 p-6 ml-6">
         @if ($reservations->isEmpty())
-            <p class="text-sm text-gray-500">You have no reservations yet.</p>
+            <p class="text-md text-gray-500">You have no reservations yet.</p>
         @else
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -93,6 +81,14 @@
                 </table>
             </div>
         @endif
+        <div class="text-right">
+            <button>
+                <a href="{{ route('parking.index') }}"
+                    class="inline-flex items-center px-3 py-2 rounded-md bg-blue-600 text-white text-xs font-semibold shadow-sm hover:bg-blue-700">
+                    Browse Parking Locations
+                </a>
+            </button>
+        </div>
     </div>
 </section>
 

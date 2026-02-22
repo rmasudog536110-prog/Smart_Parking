@@ -42,7 +42,7 @@
                         </label>
                         <input type="email" name="email" required
                                class="w-full h-10 rounded-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500"
-                               placeholder="e.g. sample@gmail.com">
+                               placeholder="sample@gmail.com">
                     </div>
 
                         <div class="relative">

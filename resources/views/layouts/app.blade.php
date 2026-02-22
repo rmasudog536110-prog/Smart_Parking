@@ -16,13 +16,43 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
+
+    
 </head>
 
 <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col font-sans">
 
+@if (session('success'))
+    <div id="success-alert"
+        class="flex items-start justify-between bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-4 text-sm shadow-sm">
+            <div class="flex items-start gap-2">
+                <i class="fa-solid fa-circle-check mt-0.5"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+
+            <button onclick="closeAlert()" class="text-black text-lg cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <ul class="list-disc list-inside space-y-1">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+
+        <button onclick="closeAlert()" class="absolute top-2 right-2 text-red-800 cursor-pointer">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+@endif
+
 @guest
     @if (!Route::is('login') && !Route::is('register') && !Route::is('password.request'))
-        <header class="position:sticky top-0 z-50 bg-white shadow-sm p-2">
+        <header class="sticky top-0 z-50 bg-white shadow-sm p-2">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <a href="{{ route('landing') }}" class="flex items-center gap-2 font-semibold text-lg">
                     <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">P</span>
@@ -86,21 +116,34 @@
                     </a>
             </div>
 
+            @elseif (auth()->user()->hasOperatorAccess())
+                <div class="space-y-1 pt-2">
+                    <p class="px-3 mb-2 text-[10px] font-bold text-gray-400 uppercase tracking-wider truncate sidebar-text">
+                        Operator
+                    </p>
+                    <a href="{{ route('staff.dashboard') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Dashboard</span>
+                    </a>
+                    <a href="{{ route('staff.scan.page') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:text-orange-600 hover:bg-orange-50 transition sidebar-link">
+                        <span class="sidebar-text truncate">Scan</span>
+                    </a>
+                </div>
+
             @else
-            <div class="space-y-1">
-                <a href="{{ route('home') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
+            <div class="space-y-1 hover:">
+                <a href="{{ route('home') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-lg hover:text-gray-900 transition-all sidebar-link">
                     <span class="sidebar-text truncate">Dashboard</span>
                 </a>
-                <a href="{{ route('parking.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
+                <a href="{{ route('parking.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-lg  transition-all sidebar-link">
                     <span class="sidebar-text truncate">Parking</span>
                 </a>
-                <a href="{{ route('vehicles.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
+                <a href="{{ route('vehicles.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-lg transition-all sidebar-link">
                     <span class="sidebar-text truncate">My vehicles</span>
                 </a>
-                <a href="{{ route('reservations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
+                <a href="{{ route('reservations.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-lg transition-all sidebar-link">
                     <span class="sidebar-text truncate">Reservations</span>
                 </a>
-                <a href="{{ route('subscription.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition sidebar-link">
+                <a href="{{ route('subscription.index') }}" class="flex items-center px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-emerald-200 hover:text-lg transition-all sidebar-link">
                     <span class="sidebar-text truncate">Subscription</span>
                 </a>
             </div>
@@ -111,7 +154,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit"
-                    class="w-full flex items-center px-4 py-4 text-sm font-medium text-gray-600 transition-all duration-200 hover:text-red-700 hover:bg-red-50 active:scale-95 cursor-pointer overflow-hidden">
+                    class="w-full flex items-center px-4 py-4 text-sm font-medium text-gray-600 transition-all duration-200 hover:text-lg transition hover:text-red-800 hover:bg-emerald-200 active:scale-95 cursor-pointer overflow-hidden">
                     <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
@@ -137,39 +180,21 @@
             </span>
         </div>
 
-            <div id="profile" class="flex items-center gap-3">
-                <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
-                <a href="{{ route('profile.edit') }}" class="block">
-                <img src="{{ auth()->user()->profile?->profile_picture_url }}"
-                    class="h-8 w-8 rounded-full object-cover border"
+        <div id="profile" class="flex items-center gap-3">
+            <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
+            <a href="{{ route('profile.edit') }}" class="block">
+                <img src="{{ auth()->user()->profile_picture_url }}"
+                    class="h-8 w-8 rounded-full object-cover border hover:w-9 hover:h-9 transition-all duration-200"
                     alt="Profile Picture">
-                </a>
-            </div>
+            </a>
+        </div>
+
         
     </header>
 @endif
-        <div class="max-w-7xl my-auto py-1">
-
-            @if (session('success'))
-                <div class="mb-6 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-                    {{ session('success') }}
-                </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-                    <ul class="list-disc list-inside space-y-1">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            <div class="space-y-10">
-                @yield('content')
-            </div>
-        </div>
+    <div class="space-y-10">
+        @yield('content')
+    </div>
     </main>
 </div>
 @endauth
@@ -211,6 +236,13 @@
             passwordInput.type = 'password';
             eyeIcon.classList.remove('fa-eye-slash');
             eyeIcon.classList.add('fa-eye');
+        }
+    }
+
+    function closeAlert() {
+        const alert = document.getElementById('success-alert');
+        if (alert) {
+            alert.remove();
         }
     }
 </script>

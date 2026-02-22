@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\AdminReservationController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Staff\StaffDashboardController;
 
 use Illuminate\Support\Facades\Route;
@@ -97,13 +97,15 @@ Route::middleware('auth')->group(function () {
         ->name('subscription.cancel');
 
     //Proflile
-    Route::middleware('auth')->group(function () {
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    });
 
-    Route::middleware(['auth', 'staff'])->prefix('staff')->name('staff.')->group(function () {
+
+    Route::get('/profile', [UserProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile', [UserProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [UserProfileController::class, 'update'])->name('profile.update');
+
+    Route::middleware(['auth'])->prefix('staff')->name('staff.')->group(function () {
         Route::get('/dashboard', [StaffDashboardController::class, 'index'])->name('dashboard');
+        Route::get('/scan', function () {return view('staff.scan');})->name('scan.page');
         Route::post('/scan', [StaffDashboardController::class, 'scan'])->name('scan');
         Route::post('/reservations/{reservation}/status', [StaffDashboardController::class, 'updateStatus'])->name('reservations.status');
     });
