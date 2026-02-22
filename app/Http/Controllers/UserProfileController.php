@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Http\Models\Profile;
-use Http\Models\User;
+use App\Models\Profile;
+use App\Models\User;
 
 class UserProfileController extends Controller
 {
@@ -42,7 +42,7 @@ class UserProfileController extends Controller
             'email' => $request->email,
         ]);
 
-        $profile = $user->profile;
+        $profile = $user->profile()->firstOrCreate(['user_id' => $user->id]);
 
         // Handle image upload
         if ($request->hasFile('profile_picture')) {
@@ -55,7 +55,7 @@ class UserProfileController extends Controller
             $profile->profile_picture = $path;
         }
 
-        $profile->phone_number = $request->phone_number;
+        $user->phone_number = $request->phone_number;
         $profile->address = $request->address;
         $profile->save();
 

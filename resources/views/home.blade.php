@@ -4,7 +4,6 @@
 
 @section('content')
 
-
     <div class="grid gap-8 lg:grid-cols-[3fr,2fr] items-start">
         <section class="space-y-6 p-6">
             <div class=" bg-white rounded-xl shadow-sm border border-gray-200 p-6">

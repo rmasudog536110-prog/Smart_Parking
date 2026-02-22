@@ -8,7 +8,7 @@
 
         {{-- Hero --}}
         <header class="text-center space-y-4 mb-4 mt-0">
-            <p class="inline-flex mx-auto items-center rounded-full bg-orange-50 px-4 py-1 text-xs font-semibold text-orange-700">
+            <p class="inline-flex mx-auto items-center rounded-full bg-orange-400 px-4 py-1 text-xs font-semibold text-white">
                 Smart Parking System
             </p>
 
@@ -31,8 +31,8 @@
             </a>
 
             <h2 class="text-3xl text-center font-semibold text-gray-900 mb-1">Sign up</h2>
-            <p class="text-xs text-center text-gray-500 mb-4 mt-1">
-                Create a driver account to start reserving parking slots.
+            <p class="text-xs text-center text-gray-700 mb-4 mt-1">
+                Create a driver account to start your stress free parking experience!.
             </p>
 
             <form action="/register" method="POST" class="space-y-4">
@@ -46,6 +46,9 @@
                     <input type="text" name="name" required
                            class="w-full h-10 rounded-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500"
                            placeholder="Juan Dela Cruz">
+                    @error('name')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Email --}}
@@ -56,46 +59,94 @@
                     <input type="email" name="email" required
                            class="w-full h-10 rounded-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500"
                            placeholder="sample@gmail.com">
+                    @error('email')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
-                {{-- Password --}}
-                <div class="relative">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Phone Number
+                    </label>
+
+                    <div class="relatve flex items-center">
+                        <span class="inline-flex h-10 items-center px-3 rounded-l-md border border-r-0 border-gray-400 bg-gray-100 text-sm text-gray-600">
+                            +63
+                        </span>
+                        <input type="tel" name="phone_number" required
+                            class="w-full h-10 rounded-r-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500"
+                            placeholder="9123456789">  
+                    </div>
+
+                    @error('phone_number')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+
+               {{-- Password --}}
+                <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">
                         Password
                     </label>
+
                     <div class="relative">
-                    <input type="password" name="password" id="password" required
-                           class="w-full h-10 rounded-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500">
-                    <button type="button" onclick="togglePassword('password', 'eyeIcon')" 
-                            class="absolute inset-y-0 mt-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 transition-colors">
-                        <i id="eyeIcon" class="fa-solid fa-eye"></i>
-                    </button>
+                        <input type="password"
+                            name="password"
+                            id="password"
+                            required
+                            class="w-full h-10 rounded-md px-3 pr-10 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500">
+
+                        <button type="button"
+                                onclick="togglePassword('password', 'eyeIconPassword')"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600">
+                            <i id="eyeIconPassword" class="fa-solid fa-eye-slash"></i>
+                        </button>
                     </div>
+
+                    @error('password')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
+
                 {{-- Confirm Password --}}
-                <div class="relative">
+                <div>
                     <label class="block text-xs font-medium text-gray-700 mb-1">
                         Confirm password
                     </label>
-                    <input type="password" name="password_confirmation" id="password_confirmation" required
-                           class="w-full h-10 rounded-md px-3 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500">
+
+                    <div class="relative">
+                        <input type="password"
+                            name="password_confirmation"
+                            id="password_confirmation"
+                            required
+                            class="w-full h-10 rounded-md px-3 pr-10 border border-gray-400 text-sm focus:border-orange-500 focus:ring-orange-500">
+
+                        <button type="button"
+                                onclick="togglePassword('password_confirmation', 'eyeIconConfirm')"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600">
+                            <i id="eyeIconConfirm" class="fa-solid fa-eye-slash"></i>
+                        </button>
+                    </div>
+
+                    @error('password_confirmation')
+                        <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="flex items-center justify-between">
                     
-                    <button type="button" onclick="togglePassword('password_confirmation', 'eyeIcon')" 
-                            class="absolute inset-y-0 mb-10 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 transition-colors">
-                        <i id="eyeIcon" class="fa-solid fa-eye"></i>
-                    </button>
-                
                     <a href="{{ route('login') }}"
-                            class="w-30 rounded-md px-3 py-2 mt-2 text-sm font-semibold text-blue-400 cursor-pointer hover:underline">
+                    class="text-sm font-semibold text-blue-500 hover:underline hover:text-blue-700 transition">
                         Already have an account? Log in
                     </a>
 
-                <div class="text-right">
                     <button type="submit"
-                            class="w-30 rounded-md px-3 bg-blue-500 py-2 mt-2 text-sm font-semibold text-white hover:bg-blue-600 cursor-pointer">
+                            class="px-5 py-2 rounded-md bg-blue-500 text-sm font-semibold text-white hover:bg-blue-600 transition cursor-pointer">
                         Create account
                     </button>
+
                 </div>
 
 

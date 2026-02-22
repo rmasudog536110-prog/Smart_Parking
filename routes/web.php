@@ -16,6 +16,7 @@ use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\UserProfileController;
 use App\Http\Controllers\Staff\StaffDashboardController;
+use App\Http\Controllers\Auth\PasswordResetController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -28,21 +29,27 @@ Route::post('/login', [RegisteredUserController::class, 'login'])->name('login.s
 Route::get('/register', [RegisteredUserController::class, 'showRegister'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'register'])->name('register.submit');
 
-
-Route::view('/forgot-password', 'auth.forgot-password')
-    ->name('password.request');
+Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [PasswordResetController::class, 'resetPassword'])->name('password.update');
 });
 
 Route::view('/privacy', 'legalsht.privacy')->name('privacy');
 Route::view('/terms', 'legalsht.terms')->name('terms');
 
-Route::get('/logout', [RegisteredUserController::class, 'logout'])->name('logout');
-Route::post('/logout', [RegisteredUserController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+
 
 //Auth User
 Route::middleware('auth')->group(function () {
+    
+
+
+    Route::get('/logout', [RegisteredUserController::class, 'logout'])->name('logout');
+
+    Route::post('/logout', [RegisteredUserController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
     
     Route::get('/home', [IndexController::class, 'index'])->name('home');
 

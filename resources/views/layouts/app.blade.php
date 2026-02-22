@@ -22,36 +22,8 @@
 
 <body class="bg-gray-100 text-gray-900 min-h-screen flex flex-col font-sans">
 
-@if (session('success'))
-    <div id="success-alert"
-        class="flex items-start justify-between bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-4 text-sm shadow-sm">
-            <div class="flex items-start gap-2">
-                <i class="fa-solid fa-circle-check mt-0.5"></i>
-                <span>{{ session('success') }}</span>
-            </div>
-
-            <button onclick="closeAlert()" class="text-black text-lg cursor-pointer">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-    </div>
-@endif
-
-@if ($errors->any())
-    <div class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-        <ul class="list-disc list-inside space-y-1">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-
-        <button onclick="closeAlert()" class="absolute top-2 right-2 text-red-800 cursor-pointer">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-    </div>
-@endif
-
 @guest
-    @if (!Route::is('login') && !Route::is('register') && !Route::is('password.request'))
+    @if (!Route::is('login') && !Route::is('register') && !Route::is('password.request') && !Route::is('password.reset'))
         <header class="sticky top-0 z-50 bg-white shadow-sm p-2">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <a href="{{ route('landing') }}" class="flex items-center gap-2 font-semibold text-lg">
@@ -72,7 +44,7 @@
     @endif
 
 <main class="flex-1">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         @yield('content')
     </div>
 </main>
@@ -165,94 +137,228 @@
     </aside>
 
     {{-- MAIN CONTENT --}}
-    <main class="flex-1 overflow-y-auto bg-gray-50">
+<main class="flex-1 overflow-y-auto bg-gray-50">
 
-@if (!Route::is('profile.edit'))
-    <header class="h-15 w-full bg-green-200 border-b border-dotted shadow-sm flex items-center justify-between px-4 shrink-0 transition-all duration-300">
+    @if (!Route::is('profile.edit'))
+        <header class="h-15 w-full bg-green-200 border-b border-dotted shadow-sm flex items-center justify-between px-4 shrink-0 transition-all duration-300">
 
 
-        <div class="flex items-center gap-2">
-            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">
-                P
-            </span>  
-            <span class="text-2xl pl-2 font-semibold whitespace-nowrap transition-opacity duration-300">
-                @yield('title')
-            </span>
-        </div>
-
-        <div id="profile" class="flex items-center gap-3">
-            <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
-            <a href="{{ route('profile.edit') }}" class="block">
-                <img src="{{ auth()->user()->profile_picture_url }}"
-                    class="h-8 w-8 rounded-full object-cover border hover:w-9 hover:h-9 transition-all duration-200"
-                    alt="Profile Picture">
-            </a>
-        </div>
-
-        
-    </header>
-@endif
-    <div class="space-y-10">
-        @yield('content')
-    </div>
-    </main>
-</div>
-@endauth
-
-@if (!Route::is('login') && !Route::is('register')  && !Route::is('password.request'))
-    <footer class="bg-gray-40 mt-10 shadow-sm p-6 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-m text-gray-500 flex items-center justify-between">
-            <span>&copy; {{ date('Y') }} Smart Parking</span>
-            <div class="flex gap-4">
-                <a href="{{ route('privacy') }}" class="hover:text-gray-900 cursor-pointer">Privacy Policy</a>
-                <a href="{{ route('terms') }}" class="hover:text-gray-900 cursor-pointer">Terms of Service</a>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-orange-500 text-white text-lg">
+                    P
+                </span>  
+                <span class="text-2xl pl-2 font-semibold whitespace-nowrap transition-opacity duration-300">
+                    @yield('title')
+                </span>
             </div>
+
+            <div id="profile" class="flex items-center gap-3">
+                <span class="text-sm text-gray-600">{{ auth()->user()->name }}</span>
+                <a href="{{ route('profile.edit') }}" class="block">
+                    <img src="{{ auth()->user()->profile_picture_url }}"
+                        class="h-8 w-8 rounded-full object-cover border hover:w-9 hover:h-9 transition-all duration-200"
+                        alt="Profile Picture">
+                </a>
+            </div>
+        </header>
+    @endif
+
+    @if (session('success'))
+        <div id="success-alert"
+            class="flex items-start justify-between bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg p-4 text-sm shadow-sm">
+                <div class="flex items-start gap-2">
+                    <i class="fa-solid fa-circle-check mt-0.5"></i>
+                    <span>{{ session('success') }}</span>
+                </div>
+
+                <button onclick="closeAlert()" class="text-black text-lg cursor-pointer">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
         </div>
-    </footer>
-@endif
+    @endif
+
+    @if ($errors->any())
+        <div class="mb-6 rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+            <ul class="list-disc list-inside space-y-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+
+            <button onclick="closeAlert()" class="absolute top-2 right-2 text-red-800 cursor-pointer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    @endif
+        <div class="space-y-10">
+            @yield('content')
+        </div>
+        </main>
+    </div>
+    @endauth
+
+    @if (!Route::is('login') && !Route::is('register')  && !Route::is('password.request') && !Route::is('password.reset'))
+        <footer class="bg-gray-40 mt-10 shadow-sm p-6 mt-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-m text-gray-500 flex items-center justify-between">
+                <span>&copy; {{ date('Y') }} Smart Parking</span>
+                <div class="flex gap-4">
+                    <a href="{{ route('privacy') }}" class="hover:text-gray-900 cursor-pointer">Privacy Policy</a>
+                    <a href="{{ route('terms') }}" class="hover:text-gray-900 cursor-pointer">Terms of Service</a>
+                </div>
+            </div>
+        </footer>
+    @endif
 
 
-<script>
-    const sidebar = document.getElementById('sidebar');
-    const toggle = document.getElementById('sidebarToggle');
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const toggle = document.getElementById('sidebarToggle');
 
-    toggle?.addEventListener('click', () => {
-        sidebar.classList.toggle('w-64');
-        sidebar.classList.toggle('w-16');
+        toggle?.addEventListener('click', () => {
+            sidebar.classList.toggle('w-64');
+            sidebar.classList.toggle('w-16');
 
-        document.querySelectorAll('.sidebar-text, .sidebar-link')
-            .forEach(el => el.classList.toggle('hidden'));
+            document.querySelectorAll('.sidebar-text, .sidebar-link')
+                .forEach(el => el.classList.toggle('hidden'));
+        });
+
+        function togglePassword(inputId, iconId) {
+            const passwordInput = document.getElementById(inputId);
+            const eyeIcon = document.getElementById(iconId);
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            }
+        }
+
+        function closeAlert() {
+            const alert = document.getElementById('success-alert');
+            if (alert) {
+                alert.remove();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+        const emailInput = document.querySelector('input[name="email"]');
+        const rememberCheckbox = document.querySelector('input[name="remember"]');
+
+        // Load saved email if it exists
+        const savedEmail = localStorage.getItem('remembered_email');
+        if (savedEmail) {
+            emailInput.value = savedEmail;
+            rememberCheckbox.checked = true;
+        }
+
+        // Save or clear email on form submit
+        document.querySelector('form').addEventListener('submit', function () {
+            if (rememberCheckbox.checked) {
+                localStorage.setItem('remembered_email', emailInput.value);
+            } else {
+                localStorage.removeItem('remembered_email');
+            }
+        });
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const nameInput = document.querySelector('input[name="name"]');
+        const emailInput = document.querySelector('input[name="email"]');
+        const phoneInput = document.querySelector('input[name="phone_number"]');
+        const passwordInput = document.getElementById('password');
+        const confirmInput = document.getElementById('password_confirmation');
+
+        function showError(input, message) {
+            removeError(input);
+
+            const error = document.createElement('p');
+            error.className = 'text-xs text-red-500 mt-1 dynamic-error';
+            error.innerText = message;
+
+            input.classList.add('border-red-500');
+            input.parentElement.appendChild(error);
+        }
+
+        function removeError(input) {
+            const oldError = input.parentElement.querySelector('.dynamic-error');
+            if (oldError) oldError.remove();
+            input.classList.remove('border-red-500');
+        }
+
+    // NAME VALIDATION
+    nameInput.addEventListener('blur', function () {
+        removeError(nameInput);
+
+        if (nameInput.value.trim() === '') {
+            showError(nameInput, "Full name is required.");
+        }
     });
 
-    function togglePassword(inputId, iconId) {
-        const passwordInput = document.getElementById(inputId);
-        const eyeIcon = document.getElementById(iconId);
+        // EMAIL VALIDATION
+        emailInput.addEventListener('blur', function () {
+            removeError(emailInput);
 
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            eyeIcon.classList.remove('fa-eye');
-            eyeIcon.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            eyeIcon.classList.remove('fa-eye-slash');
-            eyeIcon.classList.add('fa-eye');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            if (!emailPattern.test(emailInput.value)) {
+                showError(emailInput, "Please enter a valid email address.");
+            }
+        });
+
+        // PHONE VALIDATION
+        phoneInput.addEventListener('blur', function () {
+            removeError(phoneInput);
+
+            if (phoneInput.value.length < 10 || phoneInput.value.length > 11) {
+                showError(phoneInput, "Phone number must be 10-11 digits.");
+            }
+
+            if (!/^\d+$/.test(phoneInput.value)) {
+                showError(phoneInput, "Phone number must contain only digits.");
+            }
+        });
+
+        // PASSWORD VALIDATION
+        passwordInput.addEventListener('blur', function () {
+            removeError(passwordInput);
+
+            if (passwordInput.value.length < 8) {
+                showError(passwordInput, "Password must be at least 8 characters.");
+                return;
+            }
+
+            if (!/[A-Z]/.test(passwordInput.value)) {
+                showError(passwordInput, "Password must contain at least one uppercase letter.");
+            }
+
+            if (!/[0-9]/.test(passwordInput.value)) {
+                showError(passwordInput, "Password must contain at least one number.");
+            }
+        });
+
+        // CONFIRM PASSWORD VALIDATION
+        confirmInput.addEventListener('blur', function () {
+            removeError(confirmInput);
+
+            if (confirmInput.value !== passwordInput.value) {
+                showError(confirmInput, "Passwords do not match.");
+            }
+        });
+
+    });
+
+    </script>
+
+    <style>
+        .sidebar-link {
+            @apply block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition;
         }
-    }
+    </style>
 
-    function closeAlert() {
-        const alert = document.getElementById('success-alert');
-        if (alert) {
-            alert.remove();
-        }
-    }
-</script>
-
-<style>
-    .sidebar-link {
-        @apply block px-3 py-2 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 transition;
-    }
-</style>
-
-@stack('scripts')
-</body>
-</html>
+    @stack('scripts')
+    </body>
+    </html>

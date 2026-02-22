@@ -19,7 +19,7 @@ class RegisteredUserController extends Controller
         $selectedPlan = null;
 
     if ($selectedPlanId) {
-        $selectedPlan = Subscription::find($selectedPlan);
+        $selectedPlan = $selectedPlanId ? Subscription::find($selectedPlanId) : null;
     }
 
         return view('auth.register', [
@@ -33,11 +33,29 @@ class RegisteredUserController extends Controller
 public function register(Request $request)
 {
     $request->validate([
-        'name' => 'required',
-        'email' => 'required|email|unique:user',
-        'phone_number' => 'required|max:10|unique:user',
-        'password' => 'required|min:6|confirmed',
-        'plan_id' => ['nullable', 'integer'],
+        'name' => 'required|string|max:255',
+
+        'email' => 'required|email|unique:users,email',
+
+        'phone_number' => [
+            'required',
+            'digits_between:10,11',
+            'unique:users,phone_number'
+        ],
+
+        'password' => [
+            'required',
+            'min:8',
+            'confirmed',
+            'regex:/[A-Z]/', 
+            'regex:/[0-9]/',
+        ],
+    ], [
+        'password.regex' => 'Password must contain at least one uppercase letter and a number.',
+        'password.confirmed' => 'Passwords do not match.',
+        'phone_number.digits_between' => 'Phone number must be 10–11 digits.',
+        'email.unique' => 'This email is already registered.',
+        'phone_number.unique' => 'This phone number is already registered.',
     ]);
 
     $user = User::create([
@@ -47,7 +65,6 @@ public function register(Request $request)
         'password' => Hash::make($request->password),
     ]);
 
-    $user->profile()->create([]);
 
     if ($request->filled('plan_id')) {
         $plan = Subscription::find($request->plan_id);
@@ -68,13 +85,13 @@ public function register(Request $request)
         return redirect()->route('landing')->with('success', 'Thank you for registering. Your subscription is pending approval.');
     }
 
-    if ($subscription && $subscription->status === 'null') {
+    if ($subscription && $subscription->status === null) {
         Auth::login($user);
         return redirect()->route('subscription.payment.form');
     }
 
 
-    return redirect('home')->with('success', 'Registered successfully.');
+    return redirect('login')->with('success', 'You have been registered successfully. Please log in to continue.');
 }
 
     public function showLogin() {
@@ -82,14 +99,20 @@ public function register(Request $request)
     }
  
  
-    public function login(Request $request)
+public function login(Request $request)
 {
+    $request->validate([
+        'email' => 'required|email',
+        'password' => 'required',
+    ]);
+
     $credentials = $request->only('email', 'password');
- 
-    if (Auth::attempt($credentials)) {
+    $remember = $request->boolean('remember');
+
+    if (Auth::attempt($credentials, $remember)) {
         $request->session()->regenerate();
-        $user = Auth::user(); 
-        
+        $user = Auth::user();   
+
         if ($user->hasAdminAccess()) {
             return redirect()->route('admin.dashboard');
         }
@@ -97,19 +120,24 @@ public function register(Request $request)
         if ($user->hasOperatorAccess()) {
             return redirect()->route('staff.dashboard');
         }
-    
+
         $subscription = $user->subscription()->latest()->first();
+
         if ($subscription && $subscription->status === 'pending') {
-            return redirect()->route('landing')->with('success', 'Thank you for registering. Your subscription is pending approval.');
+            return redirect()->route('landing')
+                ->with('success', 'Your subscription is pending approval.');
         }
 
-        return redirect()->route('home');
+        session([
+            'subscription_status' => $subscription ? $subscription->status : 'none'
+        ]);
+
+        return redirect()->route('home')->with('success', 'You have logged in successfully.');
     }
 
-    // Login failed
     return back()->withErrors([
-        'email' => 'Invalid credentials.',
-    ]);
+        'email' => 'Invalid email or password.',
+    ])->onlyInput('email');
 }
  
     public function logout(Request $request) {

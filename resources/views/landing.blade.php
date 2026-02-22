@@ -4,72 +4,71 @@
 
 @section('content')
 
-<div class="min-h-screen flex items-center justify-center px-4 py-12">
-    <div class="max-w-5xl w-full text-center space-y-12">
+<div class="max-w-3xl mx-auto px-4 py-10 text-center space-y-6">
 
-        {{-- Hero --}}
-        <section class="space-y-6">
-            <p class="inline-flex mx-auto items-center rounded-full bg-orange-50 px-4 py-1 text-xs font-semibold text-orange-700">
-                🚗 Smart Parking System
+    {{-- Hero --}}
+    <section class="space-y-3">
+        <p class="inline-flex items-center rounded-full bg-orange-50 px-4 py-1 text-md font-semibold text-orange-700">
+            🚗 Smart Parking System
+        </p>
+
+        <h1 class="text-4xl sm:text-6xl font-bold text-gray-900 leading-tight">
+            Park smarter, <span class="text-orange-500">not harder</span>.
+        </h1>
+
+        <p class="text-gray-500 text-md max-w-xl mx-auto">
+            Find, reserve, and manage parking slots in real time.
+            <br> No more guessing, circling, or wasting fuel — everything is in one smart system.
+        </p>
+    </section>
+
+    <hr class="border-gray-100">
+
+    {{-- Stats --}}
+    <section class="grid grid-cols-3 sm:grid-cols-3 gap-4 text-center">
+        <div>
+            <p class="text-2xl font-bold text-blue-600">24/7</p>
+            <p class="text-gray-900 text-xs mt-0.5">Real-time availability</p>
+        </div>
+        <div>
+            <p class="text-2xl font-bold text-blue-600">100%</p>
+            <p class="text-gray-900 text-xs mt-0.5">Digital parking system</p>
+        </div>
+        <div>
+            <p class="text-2xl font-bold text-blue-600">Fast</p>
+            <p class="text-gray-900 text-xs mt-0.5">Reserve in a minute</p>
+        </div>
+    </section>
+
+    <hr class="border-gray-100">
+
+    {{-- Features --}}
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-5 text-left">
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-lg hover:border-blue-500 transition">
+            <p class="font-semibold text-gray-900 mb-1 text-sm">📡 Real-time slots</p>
+            <p class="text-xs text-gray-500">
+                Instantly see which parking slots are available or occupied.
             </p>
+        </div>
 
-            <h1 class="text-3xl sm:text-5xl font-bold text-gray-900 leading-tight">
-                Park smarter, <span class="text-orange-500">not harder</span>.
-            </h1>
-
-            <p class="text-gray-600 text-base max-w-2xl mx-auto mb-4">
-                Find, reserve, and manage parking slots in real time.
-                No more guessing, circling, or wasting fuel — everything is in one smart system.
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-lg hover:border-blue-500 transition">
+            <p class="font-semibold text-gray-900 mb-1 text-sm">🅿️ Easy reservations</p>
+            <p class="text-xs text-gray-500">
+                Book your slot ahead of time and arrive stress-free.
             </p>
-        </section>
+        </div>
 
-        {{-- Trust / Stats --}}
-        <section class="grid grid-cols-3 gap-4 text-sm text-center">
-            <div class="space-y-1">
-                <p class="text-xl sm:text-2xl font-bold text-gray-900">24/7</p>
-                <p class="text-gray-600 text-xs sm:text-sm">Real-time availability</p>
-            </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm hover:shadow-lg hover:border-blue-500 transition">
+            <p class="font-semibold text-gray-900 mb-1 text-sm flex items-center gap-1">
+            <i class="fa-solid fa-bolt-lightning"></i>
+                Lightning-fast entry
+            </p>
+            <p class="text-xs text-gray-500">
+                Skip long queues with automated gate systems and QR code entry.
+            </p>
+        </div>
+    </section>
 
-            <div class="space-y-1">
-                <p class="text-xl sm:text-2xl font-bold text-gray-900">100%</p>
-                <p class="text-gray-600 text-xs sm:text-sm">Digital parking system</p>
-            </div>
-
-            <div class="space-y-1">
-                <p class="text-xl sm:text-2xl font-bold text-gray-900">Fast</p>
-                <p class="text-gray-600 text-xs sm:text-sm">Reserve in a minute</p>
-            </div>
-        </section>
-
-        {{-- Features --}}
-        <section class="grid gap-4 sm:grid-cols-3 text-left">
-            <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-                <p class="font-semibold text-gray-900 mb-2">📡 Real-time slots</p>
-                <p class="text-sm text-gray-600">
-                    Instantly see which parking slots are available or occupied.
-                </p>
-            </div>
-
-            <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-                <p class="font-semibold text-gray-900 mb-2">🅿️ Easy reservations</p>
-                <p class="text-sm text-gray-600">
-                    Book your slot ahead of time and arrive stress-free.
-                </p>
-            </div>
-
-            <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
-                <p class="font-semibold text-gray-900 mb-2 flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5 text-yellow-500">
-                        <path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.972 9.5h4.778a.75.75 0 0 1 .58 1.222l-11.32 13.5a.75.75 0 0 1-1.285-.794l3.18-8.428H4.125a.75.75 0 0 1-.58-1.222l11.32-13.5a.75.75 0 0 1 .75-.241Z" clip-rule="evenodd" />
-                    </svg>
-                    Lightning-fast entry
-                </p>
-                <p class="text-sm text-gray-600">
-                    Skip the long queues with our automated gate systems and qr code entry.
-                </p>
-            </div>
-        </section>
-
-    </div>
 </div>
+
 @endsection
